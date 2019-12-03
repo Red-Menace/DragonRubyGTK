@@ -1,0 +1,6 @@
+devid=menace_enterprises
+devtitle=red_menace
+gameid=Colors
+gametitle=Colors
+version=1.0
+icon=metadata/Made with DR.png
