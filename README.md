@@ -2,5 +2,5 @@
 
 Some stuff for the Game ToolKit:
 
-- Colors - a sample/example using a class to get RGB color values by name.
+- Color_Sampler - a sample/example using a class to get RGB color values from a hash by name or index.  Includes a few color sets.
 
