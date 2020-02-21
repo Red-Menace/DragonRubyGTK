@@ -41,7 +41,7 @@ def do_key_press(keyboard)
    end
    $set = Colors.base_color_set($color_set)
    $number = $set.length
-   p keyboard.truthy_keys.clear
+   keyboard.truthy_keys.clear
 end
 
 
@@ -59,6 +59,7 @@ def tick args
    args.outputs.solids << [0, 0, 1280, 360, 0, 0, 0]
    args.outputs.labels << [20, 140, "Color set is '#{$color_set}', with #{$number} colors.", 2, 0, 255, 255, 255]
    args.outputs.labels << [20, 40, "[(b)ase, (c)rayons, (g)rays, (h)tml, (r)ainbow, (x)kcd, (6)4, (q)uit]", 2, 0, 255, 255, 255]
+   
    width = 1280.idiv($number)  # width for each color
    offset = (1280 - ($number * width)).idiv(2)  # center
    count = 0
