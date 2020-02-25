@@ -1,4 +1,8 @@
 
+#
+#  Sampler for color sets used by the class 'Color'.
+#
+
 require 'palettes/RGB_by_64_color_set.rb'
 require 'palettes/html_color_set.rb'
 require 'palettes/crayon_color_set.rb'
@@ -25,19 +29,19 @@ end
 
 
 def do_key_press(keyboard)
-# get a key press to set the color set
+# get a key press and set the color set accordingly
    keys = keyboard.truthy_keys
-   case
-   when keys.include?(:six) then $color_set = 'RGB_by_64'
-   when keys.include?(:h) then $color_set = 'html'
-   when keys.include?(:c) then $color_set = 'crayons'
-   when keys.include?(:r) then $color_set = 'circular_rainbow'
-   when keys.include?(:g) then $color_set = 'circular_grays'
-   when keys.include?(:x) then $color_set = 'xkcd'
+   $color_set = case
+   when keys.include?(:six) then 'RGB_by_64'
+   when keys.include?(:h) then 'html'
+   when keys.include?(:c) then 'crayons'
+   when keys.include?(:r) then 'circular_rainbow'
+   when keys.include?(:g) then 'circular_grays'
+   when keys.include?(:x) then 'xkcd'
    when keys.include?(:q)  # quit
       exit
    else
-      $color_set = 'basics'
+      'basics'
    end
    $set = Colors.base_color_set($color_set)
    $number = $set.length
@@ -77,5 +81,4 @@ end
 $color_set = 'basics'  # see do_key_press
 $set = Colors.base_color_set($color_set)
 $number = $set.length
-
 

@@ -8,14 +8,39 @@
 #                  'color_name' =>     [r, g, b],
 #                  'color_index' =>    [r, g, b] }
 #
-#  Plain hashes can also be passed to class methods; they should only have
-#  color name keys.  Care should be taken with key names for indexed sets
-#  to prevent overwriting and preserve order if merging with other sets.
-#  A percentage can also be used for the index, and indexes will wrap.
+#  Plain hashes can also be passed to the RGB by color or index methods; they
+#  should only have color name keys.  Care should be taken with key names for
+#  indexed sets to prevent overwriting and preserve order if merging with other
+#  sets.  A percentage can also be used for the index, and indexes will wrap.
 #
 #  Values are 0-255 integers instead of 0.0 - 1.0 floats to match existing
 #  web documentation, tools, and DragonRuby GTK, although there are a few
 #  conversion methods to work with hexadecimals and floats.
+#
+#  Class Methods:
+#     Color.color_set(set_name = 'Basics')
+#     Color.base_color_set(set_name = 'Basics')
+#     Color.color_group(name_array = nil, names_only = false)
+#     Color.merged_set
+#     Color.rgb_by_name(color_name = 'gray', set = 'Basics')
+#     Color.name_group(name_array = [], set = 'Basics')
+#     Color.rgb_by_index(color_index = 0, set = 'Basics')
+#     Color.index_group(index_array = [], set = 'Basics')
+#     Color.lookup(rgb_array, set = nil)
+#     Color.rgb_from_hex(hex_string)
+#     Color.hex_from_rgb(rgb_array)
+#     Color.float_from_rgba(int_rgba)
+#     Color.rgba_from_float(float_rgba)
+#     Color.new(color_name = 'gray', set = 'Basics', transparency = 255)
+#  Instance methods:
+#     c.set_color(color_name = 'gray', set = 'Basics', transparency = nil)
+#     c.alpha=(transparency)
+#     c.opposite(name_lookup = nil)
+#     c.contrast(name_lookup = nil)
+#     c.lshift(name_lookup = nil)
+#     c.rshift(name_lookup = nil)
+#     c.shade(amount = 0.0, name_lookup = nil)
+#     c.tint(amount = 0.0, name_lookup = nil)
 #
 
 
@@ -256,6 +281,7 @@ class Colors
       @rgba = @rgb + [Integer(@alpha)]
       @alpha
    end
+   alias alpha= alpha
    
    
    def opposite(name_lookup = nil)
@@ -263,7 +289,6 @@ class Colors
    # Returns the [r, g, b] array.
       @rgb = [ 255 - @rgb[0], 255 - @rgb[1], 255 - @rgb[2] ]
       update(name_lookup)
-      @rgb
    end
    
    
@@ -273,7 +298,6 @@ class Colors
       sum = @rgb.inject(0){|sum, x| sum + x }
       @rgb = (sum / 3) < 128 ? [255, 255, 255] : [0, 0, 0]
       update(name_lookup)
-      @rgb
    end
 
 
@@ -282,7 +306,6 @@ class Colors
    # Returns the [r, g, b] array.
       @rgb = [ @rgb[1], @rgb[2], @rgb[0] ]
       update(name_lookup)
-      @rgb
    end
 
 
@@ -291,7 +314,6 @@ class Colors
    # Returns the [r, g, b] array.
       @rgb = [ @rgb[2], @rgb[0], @rgb[1] ]
       update(name_lookup)
-      @rgb
    end
    
    
@@ -308,7 +330,6 @@ class Colors
          result << [0, value, 255].sort[1]
       end
       update(name_lookup)
-      @rgb
    end
 
    
@@ -325,7 +346,6 @@ class Colors
          result << [0, value, 255].sort[1]
       end
       update(name_lookup)
-      @rgb
    end
 
 
@@ -338,9 +358,11 @@ class Colors
    def update(name_lookup = nil)
    # Update color attributes from the current RGB value.
    # The name isn't updated by default, as most likely there won't be a match.
+   # Returns the [r, g, b] array.
       @rgba = @rgb + [@alpha]
       @hex = Colors.hex_from_rgb(@rgb)
       @name = Colors.lookup(@rgb) unless name_lookup.nil?
+      @rgb
    end
 
 end
