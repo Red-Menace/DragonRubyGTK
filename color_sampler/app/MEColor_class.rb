@@ -34,7 +34,9 @@
 #     Color.new(color_name = 'gray', set = 'Basics', transparency = 255)
 #  Instance methods:
 #     c.set_color(color_name = 'gray', set = 'Basics', transparency = nil)
-#     c.alpha=(transparency)
+#     c.alpha(transparency)
+#     c.increment(amount)
+#     c.index
 #     c.opposite(name_lookup = nil)
 #     c.contrast(name_lookup = nil)
 #     c.lshift(name_lookup = nil)
@@ -96,7 +98,8 @@ class Colors
    # ――― Attributes ―――
    ##################################################
 
-   attr_reader :name,   # the color or index name
+   attr_reader :set,    # the color set name
+               :name,   # the color or index name
                :rgb,    # [red, green, blue] components (0 - 255)
                :alpha,  # transparency (0 - 255)
                :rgba,   # [red, green, blue, alpha] components
@@ -117,7 +120,7 @@ class Colors
       
       
       def base_color_set(set_name = 'Basics')
-      # Return the hash for the specified color set name less any palette keys.
+      # Return the hash for the specified color set name, less any palette keys.
          color_set(set_name).reject { |key, _| key.to_s.include?('palette_') }
       end
       
@@ -147,6 +150,7 @@ class Colors
       # A gray color is used if the name is not specified or found.
       # Returns an [r, g, b] array.
          set = (set.class == Hash) ? set : color_set(set)
+         color_name = set.keys.sample if color_name.to_s == 'random'
          rgb = color_name.to_s.include?('palette_') ? nil : set[color_name.to_s]
          rgb.nil? ? [128, 128, 128] : rgb
       end
@@ -250,7 +254,7 @@ class Colors
    # Set up a new color object with the specified name, color set, and transparency.
    # Using nil or the default for the transparency sets it to 255 (opaque).
       transparency = 255 if transparency.nil?
-      color(color_name, set, transparency)  # continue setup
+      set_color(color_name, set, transparency)  # continue setup
    end
 
 
@@ -258,11 +262,12 @@ class Colors
    #  ――― Instance Methods ―――
    ##################################################
 
-   def color(color_name = 'gray', set = 'Basics', transparency = nil)
+   def set_color(color_name = 'gray', set = 'Basics', transparency = nil)
    # Set color attributes for the specified name.
    # A nil transparency keeps the current setting.
    # Returns the new color - a gray color is used if the name is not specified or found.
-      color_name = set.keys.sample if color_name.to_s == 'random'
+      set = (set.class == Hash) ? set : Colors.color_set(set)
+      @set = set[:palette_name]
       @rgb = Colors.rgb_by_name(color_name, set)
       @name = (@rgb == [128, 128, 128]) ? 'gray' : color_name
       alpha(transparency) unless transparency.nil?
@@ -270,7 +275,7 @@ class Colors
       @hex = Colors.hex_from_rgb(@rgb)
       self
    end
-   
+
 
    def alpha(transparency)
    # Set the color's transparency from an integer (0 - 255) or percentage (0.0 - 1.0).
@@ -281,17 +286,40 @@ class Colors
       @rgba = @rgb + [Integer(@alpha)]
       @alpha
    end
-   alias alpha= alpha
+
+
+   def increment(amount = 0)
+   # Increment (or decrement) the color index.
+   # Returns the new index.
+      set = Colors.color_set(@set)
+      index = set.keys.index(@name) - 2
+      index = 0 if index.nil?  # unknown name
+      count = set.length - 2
+      color_index = ((index + amount) % count)  # wrap
+      color_index = (color_index < 0) ? color_index + count : color_index
+      @name = set.keys[color_index + 2]
+      @rgb = set[@name]
+      @rgba = @rgb + [@alpha]
+      @hex = Colors.hex_from_rgb(@rgb)
+      color_index + 2
+   end
    
    
+   def index
+   # Return the index of the current color.
+      set = Colors.color_set(@set)
+      index = set.keys.index(@name) - 2
+   end
+
+
    def opposite(name_lookup = nil)
    # Set complementary RGB values.
    # Returns the [r, g, b] array.
       @rgb = [ 255 - @rgb[0], 255 - @rgb[1], 255 - @rgb[2] ]
       update(name_lookup)
    end
-   
-   
+
+
    def contrast(name_lookup = nil)
    # Set contrasting black or white RGB values.
    # Returns the [r, g, b] array.
@@ -315,8 +343,8 @@ class Colors
       @rgb = [ @rgb[2], @rgb[0], @rgb[1] ]
       update(name_lookup)
    end
-   
-   
+
+
    def shade(amount = 0.0, name_lookup = nil)
    # Subtract shade (toward black) from RGB array values.
    # Amount can be an integer (0 - 255) or percentage (0.0 - 1.0).
@@ -332,7 +360,7 @@ class Colors
       update(name_lookup)
    end
 
-   
+
    def tint(amount = 0.0, name_lookup = nil)
    # Add tint (toward white) to RGB array values.
    # Amount can be an integer (0 - 255) or percentage (0.0 - 1.0).
