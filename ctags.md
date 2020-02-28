@@ -1,5 +1,5 @@
 
-### DragonRuby GTK v34 ctags (emacs) extracted 2020-02-24
+### DragonRuby GTK v35 ctags (emacs) extracted 2020-02-28
 ----
 
 #### ./dragon/numeric\_deprecated.rb
@@ -14,7 +14,7 @@
    - module FlatArrayDeprecated
      - def + other
 - module GTK
-  - module OutputsDeprecated
+   - module OutputsDeprecated
      - def \_\_raise\_deprecated\_primitive\_assignment\_\_ prop
      - def \_\_raise\_property\_renamed\_\_ old\_name, new\_name
      - def solids= value
@@ -270,6 +270,8 @@
    - def sign
    - def pos?
    - def neg?
+   - def cos
+   - def sin
 - class Float
    - def - other
    - def + other
@@ -514,208 +516,208 @@
 - module GTK
    - module Primitive
      - module Common
-       - def primitive\_marker
-       - def merge *args
+	       - def primitive\_marker
+	       - def merge *args
      - module Point
-       - def x
-       - def x= value
-       - def x1
-       - def x1= value
-       - def y
-       - def y= value
-       - def y1
-       - def y1= value
-       - def w
-       - def h
-       - def right
-       - def left
-       - def top
-       - def bottom
-       - def point
-       - def left
-       - def bottom
-       - def to\_hash
-       - def associate hash = nil
+	       - def x
+	       - def x= value
+	       - def x1
+	       - def x1= value
+	       - def y
+	       - def y= value
+	       - def y1
+	       - def y1= value
+	       - def w
+	       - def h
+	       - def right
+	       - def left
+	       - def top
+	       - def bottom
+	       - def point
+	       - def left
+	       - def bottom
+	       - def to\_hash
+	       - def associate hash = nil
      - module Rect
-       - def w
-       - def w= value
-       - def h
-       - def h= value
-       - def rect
-       - def right
-       - def x2
-       - def top
-       - def y2
-       - def center\_inside\_rect *other\_rect
-       - def shift\_rect *args
-       - def rect\_shift *args
-       - def rect\_shift\_right v
-       - def rect\_shift\_left v
-       - def rect\_shift\_up v
-       - def rect\_shift\_down v
-       - def to\_hash
+	       - def w
+	       - def w= value
+	       - def h
+	       - def h= value
+	       - def rect
+	       - def right
+	       - def x2
+	       - def top
+	       - def y2
+	       - def center\_inside\_rect *other\_rect
+	       - def shift\_rect *args
+	       - def rect\_shift *args
+	       - def rect\_shift\_right v
+	       - def rect\_shift\_left v
+	       - def rect\_shift\_up v
+	       - def rect\_shift\_down v
+	       - def to\_hash
      - module Determined
      - module Color
-       - def looks\_like\_a\_sprite?
-       - def r
-       - def r= value
-       - def g
-       - def g= value
-       - def b
-       - def b= value
-       - def a
-       - def a= value
+	       - def looks\_like\_a\_sprite?
+	       - def r
+	       - def r= value
+	       - def g
+	       - def g= value
+	       - def b
+	       - def b= value
+	       - def a
+	       - def a= value
      - module Solid
-       - def to\_hash
-       - def primitive\_marker
+	       - def to\_hash
+	       - def primitive\_marker
      - module Border
-       - def primitive\_marker
-       - def to\_hash
+	       - def primitive\_marker
+	       - def to\_hash
      - module Label
-       - def primitive\_marker
-       - def text
-       - def text= value
-       - def defines\_enums?
-       - def size\_enum
-       - def size\_enum= value
-       - def alignment\_enum
-       - def alignment\_enum= value
-       - def r
-       - def r= value
-       - def g
-       - def g= value
-       - def b
-       - def b= value
-       - def a
-       - def a= value
-       - def font
-       - def font= value
-       - def to\_hash
-       - def w
-       - def h
+	       - def primitive\_marker
+	       - def text
+	       - def text= value
+	       - def defines\_enums?
+	       - def size\_enum
+	       - def size\_enum= value
+	       - def alignment\_enum
+	       - def alignment\_enum= value
+	       - def r
+	       - def r= value
+	       - def g
+	       - def g= value
+	       - def b
+	       - def b= value
+	       - def a
+	       - def a= value
+	       - def font
+	       - def font= value
+	       - def to\_hash
+	       - def w
+	       - def h
      - module Line
-       - def primitive\_marker
-       - def x
-       - def x= value
-       - def y
-       - def y= value
-       - def x2
-       - def x2= value
-       - def y2
-       - def y2= value
-       - def w
-       - def h
-       - def to\_hash
+	       - def primitive\_marker
+	       - def x
+	       - def x= value
+	       - def y
+	       - def y= value
+	       - def x2
+	       - def x2= value
+	       - def y2
+	       - def y2= value
+	       - def w
+	       - def h
+	       - def to\_hash
      - module Sprite
-       - def primitive\_marker
-       - def path
-       - def path= value
-       - def angle
-       - def angle= value
-       - def a
-       - def a= value
-       - def r
-       - def r= value
-       - def g
-       - def g= value
-       - def b
-       - def b= value
-       - def tile\_x
-       - def tile\_x= value
-       - def tile\_y
-       - def tile\_y= value
-       - def tile\_w
-       - def tile\_w= value
-       - def tile\_h
-       - def tile\_h= value
-       - def flip\_horizontally
-       - def flip\_horizontally= value
-       - def flip\_vertically
-       - def flip\_vertically= value
-       - def angle\_anchor\_x
-       - def angle\_anchor\_x= value
-       - def angle\_anchor\_y
-       - def angle\_anchor\_y= value
-       - def to\_hash
+	       - def primitive\_marker
+	       - def path
+	       - def path= value
+	       - def angle
+	       - def angle= value
+	       - def a
+	       - def a= value
+	       - def r
+	       - def r= value
+	       - def g
+	       - def g= value
+	       - def b
+	       - def b= value
+	       - def tile\_x
+	       - def tile\_x= value
+	       - def tile\_y
+	       - def tile\_y= value
+	       - def tile\_w
+	       - def tile\_w= value
+	       - def tile\_h
+	       - def tile\_h= value
+	       - def flip\_horizontally
+	       - def flip\_horizontally= value
+	       - def flip\_vertically
+	       - def flip\_vertically= value
+	       - def angle\_anchor\_x
+	       - def angle\_anchor\_x= value
+	       - def angle\_anchor\_y
+	       - def angle\_anchor\_y= value
+	       - def to\_hash
      - module ConversionCapabilities
-       - def raise\_ambigous! m
-       - def mark\_assert!
-       - def mark\_as\_point!
-       - def mark\_as\_rect!
-       - def mark\_as\_solid!
-       - def mark\_as\_border!
-       - def mark\_as\_line!
-       - def mark\_as\_label!
-       - def mark\_as\_primitive! type
-       - def mark\_as\_sprite!
-       - def mark\_as\_common!
-       - def path
-       - def path= value
-       - def inside\_rect? outer\_rect
-       - def intersects\_rect? other, tolerance = 0.1
-       - def intersect\_rect? other, tolerance = 0.1
-       - def rect
-       - def point
-       - def scale\_rect percentage, *anchors
-       - def scale\_rect\_extended *args
-       - def center\_inside\_rect *other\_rect
-       - def text
-       - def text= value
-       - def left
-       - def right
-       - def top
-       - def bottom
-       - def w\_half
-       - def width\_half
-       - def h\_half
-       - def height\_half
-       - def x
-       - def x1
-       - def shift\_rect *args
-       - def rect\_shift *args
-       - def rect\_shift\_right v
-       - def rect\_shift\_left v
-       - def rect\_shift\_up v
-       - def rect\_shift\_down v
-       - def x= value
-       - def x1= value
-       - def x2
-       - def y2
-       - def y= value
-       - def y
-       - def y1= value
-       - def y1
-       - def w
-       - def w= value
-       - def width
-       - def h
-       - def h= value
-       - def height
-       - def angle
-       - def angle= value
-       - def angle\_given\_point other\_point
-       - def angle\_to other\_point
-       - def angle\_from other\_point
-       - def a
-       - def a= value
-       - def point
-       - def solid
-       - def sprite
-       - def label
-       - def line
-       - def border
-       - def to\_hash
-       - def associate hash = nil
-       - def anchor\_rect anchor\_x, anchor\_y
-       - def sprites
-       - def solids
-       - def labels
-       - def borders
-       - def lines
-       - def outputs\_add\_dwim os, mark\_method, primitive\_name
-       - def outputs\_mark! o, mark\_method, primitive\_name
-       - def outputs\_resolved? o
-       - def outputs\_resolve\_collection target
+	       - def raise\_ambigous! m
+	       - def mark\_assert!
+	       - def mark\_as\_point!
+	       - def mark\_as\_rect!
+	       - def mark\_as\_solid!
+	       - def mark\_as\_border!
+	       - def mark\_as\_line!
+	       - def mark\_as\_label!
+	       - def mark\_as\_primitive! type
+	       - def mark\_as\_sprite!
+	       - def mark\_as\_common!
+	       - def path
+	       - def path= value
+	       - def inside\_rect? outer\_rect
+	       - def intersects\_rect? other, tolerance = 0.1
+	       - def intersect\_rect? other, tolerance = 0.1
+	       - def rect
+	       - def point
+	       - def scale\_rect percentage, *anchors
+	       - def scale\_rect\_extended *args
+	       - def center\_inside\_rect *other\_rect
+	       - def text
+	       - def text= value
+	       - def left
+	       - def right
+	       - def top
+	       - def bottom
+	       - def w\_half
+	       - def width\_half
+	       - def h\_half
+	       - def height\_half
+	       - def x
+	       - def x1
+	       - def shift\_rect *args
+	       - def rect\_shift *args
+	       - def rect\_shift\_right v
+	       - def rect\_shift\_left v
+	       - def rect\_shift\_up v
+	       - def rect\_shift\_down v
+	       - def x= value
+	       - def x1= value
+	       - def x2
+	       - def y2
+	       - def y= value
+	       - def y
+	       - def y1= value
+	       - def y1
+	       - def w
+	       - def w= value
+	       - def width
+	       - def h
+	       - def h= value
+	       - def height
+	       - def angle
+	       - def angle= value
+	       - def angle\_given\_point other\_point
+	       - def angle\_to other\_point
+	       - def angle\_from other\_point
+	       - def a
+	       - def a= value
+	       - def point
+	       - def solid
+	       - def sprite
+	       - def label
+	       - def line
+	       - def border
+	       - def to\_hash
+	       - def associate hash = nil
+	       - def anchor\_rect anchor\_x, anchor\_y
+	       - def sprites
+	       - def solids
+	       - def labels
+	       - def borders
+	       - def lines
+	       - def outputs\_add\_dwim os, mark\_method, primitive\_name
+	       - def outputs\_mark! o, mark\_method, primitive\_name
+	       - def outputs\_resolved? o
+	       - def outputs\_resolve\_collection target
 
 #### ./dragon/array\_deprecated.rb
 
@@ -783,11 +785,11 @@
      - def parse\_json\_file fname
      - def set\_window\_title newtitle
      - class HTTPCallbacks
-       - def initialize protect\_from\_gc
-       - def ready newstate
-       - def http\_response\_header
-       - def http\_response\_data
-       - def http\_done
+	       - def initialize protect\_from\_gc
+	       - def ready newstate
+	       - def http\_response\_header
+	       - def http\_response\_data
+	       - def http\_done
      - def http\_get url, extra\_headers=nil
      - def http\_head url, extra\_headers=nil
      - def http\_post url, form\_fields=nil, extra\_headers=nil
@@ -1196,6 +1198,7 @@
      - def hotload\_if\_needed
      - def on\_load\_succeeded file
      - def reload\_if\_needed file, force = false
+     - def reset\_sprite path
 
 #### ./dragon/serialize.rb
 
@@ -1223,7 +1226,7 @@
      - def toggle
      - def currently\_toasting?
      - def toast\_extended id = nil, duration = nil, *messages
-   - def toast id, *messages
+     - def toast id, *messages
      - def perma\_toast id = nil, messages
      - def toast id = nil, *messages
      - def console\_toggle\_key\_down? args
@@ -1268,12 +1271,10 @@
 - module GTK
    - class Grid
      - def initialize ffi\_draw
-     - def transform\_rect x, y, w, h
      - def transform\_x x
      - def untransform\_x x
      - def untransform\_y y
      - def transform\_y y
-     - def transform\_angle angle
      - def origin\_bottom\_left!
      - def origin\_center!
      - def w
