@@ -1,26 +1,47 @@
 
 #
-#  Sampler for color sets used by the class 'Color'.
+#  Color class example / palette sampler.
+#  Built with the v36 release. 
+#
+#  Initial color display is from the Basic (default) set.
+#
+#  Each time a new color set is chosen (the options are shown along
+#  the bottom of the display), a set of static lines is generated using
+#  the palette colors.  The tint/shade of the colors can also be varied.
 #
 
-require 'palettes/RGB_by_64_color_set.rb'
-require 'palettes/html_color_set.rb'
+
 require 'palettes/crayon_color_set.rb'
 require 'palettes/circular_gray_color_set.rb'
+require 'palettes/html_color_set.rb'
 require 'palettes/circular_rainbow_color_set.rb'
+require 'palettes/rainbow_one_color_set.rb'
+require 'palettes/rainbow_two_color_set.rb'
+require 'palettes/RGB_by_64_color_set.rb'
 require 'palettes/xkcd_color_set.rb'
 
 require 'app/MEColor_class.rb'
 
 
-def file_display
+def defaults args
+   args.state.color_set = 'basics'
+   args.state.set = Colors.color_set('basics')
+   args.state.number = (args.state.set.length) - 2  # skip palette tags
+   args.state.tint = 0
+   args.state.new_sample = true
+end
+
+
+def file_display color_set
 # get file text based on color set
-   case $color_set
-   when 'RGB_by_64' then "File:  'palettes/RGB_by_64_color_set.rb'"
-   when 'html' then "File:  'palettes/html_color_set.rb'"
+   case color_set
    when 'crayons' then "File:  'palettes/crayon_color_set.rb'"
-   when 'circular_rainbow' then "File:  'palettes/circular_rainbow_color_set.rb'"
    when 'circular_grays' then "File:  'palettes/circular_gray_color_set.rb'"
+   when 'html' then "File:  'palettes/html_color_set.rb'"
+   when 'circular_rainbow' then "File:  'palettes/circular_rainbow_color_set.rb'"
+   when 'rainbow_one' then "File:  'palettes/rainbow_one_color_set.rb'"
+   when 'rainbow_two' then "File:  'palettes/rainbow_two_color_set.rb'"
+   when 'RGB_by_64' then "File:  'palettes/RGB_by_64_color_set.rb'"
    when 'xkcd' then "File:  'palettes/xkcd_color_set.rb'"
    else
       "Basic (default) color set"
@@ -28,57 +49,82 @@ def file_display
 end
 
 
-def do_key_press(keyboard)
-# get a key press and set the color set accordingly
-   keys = keyboard.truthy_keys
-   $color_set = case
-   when keys.include?(:six) then 'RGB_by_64'
-   when keys.include?(:h) then 'html'
-   when keys.include?(:c) then 'crayons'
-   when keys.include?(:r) then 'circular_rainbow'
-   when keys.include?(:g) then 'circular_grays'
-   when keys.include?(:x) then 'xkcd'
-   when keys.include?(:q)  # quit
-      exit
-   else
-      'basics'
+def do_key_press args
+# get a key press to choose the color set
+   keys = args.inputs.keyboard.truthy_keys
+   color_set = case
+               when keys.include?(:b) then 'basics'
+               when keys.include?(:one) then 'rainbow_one'
+               when keys.include?(:two) then 'rainbow_two'
+               when keys.include?(:c) then 'crayons'
+               when keys.include?(:g) then 'circular_grays'
+               when keys.include?(:h) then 'html'
+               when keys.include?(:r) then
+                  keys.include?(:shift) ? 'RGB_by_64' : 'circular_rainbow'
+               when keys.include?(:x) then 'xkcd'
+               when keys.include?(:zero)
+                  args.state.tint = 0  # reset
+                  nil
+               when keys.include?(:equal_sign) || keys.include?(:plus)
+                  args.state.tint += 25  # lighter
+                  args.state.tint = 255 if args.state.tint >= 255
+                  nil
+               when keys.include?(:hyphen) || keys.include?(:underscore)
+                  args.state.tint -= 25  # darker
+                  args.state.tint = -255 if args.state.tint <= -255
+                  nil
+               when keys.include?(:q)  # quit
+                  exit
+               else
+                  nil
+               end
+   unless color_set.nil?
+      args.state.color_set = color_set
+      args.state.set = Colors.color_set(color_set)
+      args.state.number = (args.state.set.length) - 2
+      args.state.tint = 0  # reset for new color set
    end
-   $set = Colors.base_color_set($color_set)
-   $number = $set.length
-   keyboard.truthy_keys.clear
+   args.state.new_sample = true
+   args.inputs.keyboard.truthy_keys.clear
 end
 
 
-#  There aren't any optimizations, so the game loop is not overly speedy.
-#  The color sets are just being thrown out there.
-def tick args
+def build_sample args
+# build a set of static lines from the color set.
+   args.outputs.static_lines.clear
+   sample = []
    
-   do_key_press(args.inputs.keyboard) if args.inputs.keyboard.truthy_keys.length > 1
-   
-   #top half and file label
-   args.outputs.solids << [0, 360, 1280, 360, 255, 255, 255]
-   args.outputs.labels << [20, 600, file_display, 2, 0, 0, 0, 0]
-   
-   # bottom half and color set label
-   args.outputs.solids << [0, 0, 1280, 360, 0, 0, 0]
-   args.outputs.labels << [20, 140, "Color set is '#{$color_set}', with #{$number} colors.", 2, 0, 255, 255, 255]
-   args.outputs.labels << [20, 40, "[(b)ase, (c)rayons, (g)rays, (h)tml, (r)ainbow, (x)kcd, (6)4, (q)uit]", 2, 0, 255, 255, 255]
-   
-   width = 1280.idiv($number)  # width for each color
-   offset = (1280 - ($number * width)).idiv(2)  # center
+   width = 1280.idiv(args.state.number)  # width for each color
+   offset = (1280 - (args.state.number * width)).idiv(2)  # center
    count = 0
-   (0..($number - 1)).each do |item|  # go though each actual color index
+   (0..(args.state.number - 1)).each do |item|  # go though each color item
       (count..(count + width)).each do |x|  # and draw width number of lines
          x = x + offset
-         rgb = Colors.rgb_by_index(item, $set)  # look up the color
-         args.outputs.lines << [x, 180, x, 540, *rgb]
+         color = Colors.new(item, args.state.set)  # look up the color by index
+         color.tint(args.state.tint)  # tint/shade it
+         sample << [x, 220, x, 580, *color.rgb]
       end
       count += width  # for the next one
    end
-
+   
+   args.state.new_sample = false
+   sample
 end
 
-$color_set = 'basics'  # see do_key_press
-$set = Colors.base_color_set($color_set)
-$number = $set.length
+
+def tick args
+   defaults(args) if args.state.tick_count == 0
+   
+   #top half with file label
+   args.outputs.solids << [0, 400, 1280, 320, 255, 255, 255]
+   args.outputs.labels << [20, 660, file_display(args.state.color_set), 2, 0, 0, 0, 0]
+   
+   # bottom half with color set label and options
+   args.outputs.solids << [0, 0, 1280, 400, 0, 0, 0]
+   args.outputs.labels << [20, 160, "Color set is '#{args.state.color_set}', with #{args.state.number} colors and a tint of #{args.state.tint}.", 2, 0, 255, 255, 255]
+   args.outputs.labels << [20, 70, "tint[+|0|-], rainbow(1)(2)(r), (b)asics, (c)rayon, (g)rays, (h)tml, (R)GBby64, (x)kcd, (q)uit", 2, 0, 255, 255, 255]
+   
+   do_key_press(args) if args.inputs.keyboard.truthy_keys.length > 1
+   args.outputs.static_lines << build_sample(args) if args.state.new_sample
+end
 

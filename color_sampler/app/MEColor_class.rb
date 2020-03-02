@@ -2,57 +2,62 @@
 #
 #  A class for creating and manipulating RGB color hashes by name or index.
 #
-#  A basic default color set is included, other sets are from included modules.
+#  A default color set is defined in the class, other sets are from included modules.
 #  Color sets include keys for the palette display name and count, for example:
 #     SET_NAME = { palette_name: 'Display Name', palette_count: 32,
 #                  'color_name' =>     [r, g, b],
 #                  'color_index' =>    [r, g, b] }
+#  Note that the indexing methods don't count these keys when using named
+#  color sets (e.g. the first actual color is 0).
 #
-#  Plain hashes can also be passed to the RGB by color or index methods; they
-#  should only have color name keys.  Care should be taken with key names for
-#  indexed sets to prevent overwriting and preserve order if merging with other
-#  sets.  A percentage can also be used for the index, and indexes will wrap.
+#  Color.new will look up the color set hash if a name is provided, or a color set
+#  hash can also be used.  Color sets must have the palette keys listed above.
+#
+#  The class RGB by color or index methods will also accept color hashes.  Care
+#  should be taken with key names for indexed sets to prevent overwriting and
+#  preserve order if merging with other sets.  A percentage can also be used for
+#  the index, and indexes will wrap.
 #
 #  Values are 0-255 integers instead of 0.0 - 1.0 floats to match existing
 #  web documentation, tools, and DragonRuby GTK, although there are a few
 #  conversion methods to work with hexadecimals and floats.
 #
 #  Class Methods:
-#     Color.color_set(set_name = 'Basics')
-#     Color.base_color_set(set_name = 'Basics')
-#     Color.color_group(name_array = nil, names_only = false)
-#     Color.merged_set
-#     Color.rgb_by_name(color_name = 'gray', set = 'Basics')
-#     Color.name_group(name_array = [], set = 'Basics')
-#     Color.rgb_by_index(color_index = 0, set = 'Basics')
-#     Color.index_group(index_array = [], set = 'Basics')
-#     Color.lookup(rgb_array, set = nil)
-#     Color.rgb_from_hex(hex_string)
-#     Color.hex_from_rgb(rgb_array)
-#     Color.float_from_rgba(int_rgba)
-#     Color.rgba_from_float(float_rgba)
-#     Color.new(color_name = 'gray', set = 'Basics', transparency = 255)
+#     Colors.color_set(set_name = 'Basics')
+#     Colors.base_color_set(set_name = 'Basics')
+#     Colors.color_group(name_array = nil, names_only = false)
+#     Colors.merged_set
+#     Colors.rgb_by_name(color_name = 'gray', set = 'Basics')
+#     Colors.name_group(name_array = [], set = 'Basics')
+#     Colors.rgb_by_index(color_index = 0, set = 'Basics')
+#     Colors.index_group(index_array = [], set = 'Basics')
+#     Colors.name_from_rgb(rgb_array, set = nil)
+#     Colors.rgb_from_hex(hex_string)
+#     Colors.hex_from_rgb(rgb_array)
+#     Colors.float_from_rgba(int_rgba)
+#     Colors.rgba_from_float(float_rgba)
+#     Colors.new(color = 'gray', set = 'Basics', transparency = 255)
 #  Instance methods:
-#     c.set_color(color_name = 'gray', set = 'Basics', transparency = nil)
+#     c.set_color(color = 'gray', set = 'Basics', transparency = nil)
+#     c.offset(amount = 0)
 #     c.alpha(transparency)
-#     c.increment(amount)
-#     c.index
-#     c.opposite(name_lookup = nil)
-#     c.contrast(name_lookup = nil)
-#     c.lshift(name_lookup = nil)
-#     c.rshift(name_lookup = nil)
-#     c.shade(amount = 0.0, name_lookup = nil)
-#     c.tint(amount = 0.0, name_lookup = nil)
+#     c.opposite(lookup = nil)
+#     c.contrast(lookup = nil)
+#     c.lshift(lookup = nil)
+#     c.rshift(lookup = nil)
+#     c.tint(amount = 0.0, lookup = nil)
 #
 
 
 class Colors
 
-   include RGBby64Colors
    include HTMLColors
    include CrayonColors
    include CircularGrayColors
    include CircularRainbowColors
+   include RainbowOneColors
+   include RainbowTwoColors
+   include RGBby64Colors
    include XKCDColors
   
 
@@ -114,6 +119,7 @@ class Colors
 
       def color_set(set_name = 'Basics')
       # Return the hash for the specified color set name.
+         return BASICS if set_name.to_s == ''
          symbol = set_name.to_s.upcase.to_sym
          self.const_defined?(symbol) ? self.const_get(symbol) : BASICS
       end
@@ -151,8 +157,8 @@ class Colors
       # Returns an [r, g, b] array.
          set = (set.class == Hash) ? set : color_set(set)
          color_name = set.keys.sample if color_name.to_s == 'random'
-         rgb = color_name.to_s.include?('palette_') ? nil : set[color_name.to_s]
-         rgb.nil? ? [128, 128, 128] : rgb
+         rgb = set[color_name.to_s]
+         rgb.class != Array ? [128, 128, 128] : rgb
       end
 
 
@@ -168,23 +174,13 @@ class Colors
       def rgb_by_index(color_index = 0, set = 'Basics')
       # Get RGB values by indexing into a color set name or hash.
       # Useful for circular sets or sets that use nameless colors.
-      # Indexes wrap to the number of colors, and can also be a percentage (0.0 - 1.0).
+      # Indexes wrap to the number of colors.
       # Returns an [r, g, b] array.
-         if (set.class == Hash)  # passed color hash without set tags
-            hash_arg = true
-            count = set.length
-         else  # get an included color hash
-            hash_arg = false
-            set = color_set(set)
-            count = set.length - 2  # don't count set tags
-         end
-         if color_index.class == Float && color_index <= 1  # percent
-            color_index = Integer(color_index.abs * count + 0.5)
-         end 
+         set = (set.class == Hash) ? set : color_set(set)
+         count = set.length - 2 # don't count palette keys
          color_index = color_index % count  # wrap
          color_index = (color_index < 0) ? color_index + count : color_index
-         hash_arg ? color_index : color_index += 2  # offset index
-         rgb = set[set.keys[color_index]]
+         rgb = set[set.keys[color_index + 2]]
       end
 
 
@@ -197,10 +193,10 @@ class Colors
       end
 
 
-      def lookup(rgb_array, set = nil)
-      # Try to find a color name for the specified RGB array.
-      # The merged set is searched unless a color set is specified.
-      # Returns 'unknown' if the RGB array is not found in the color set name or hash.
+      def name_from_rgb(rgb_array, set = nil)
+      # Look up a color name for an RGB array from a color set name or hash.
+      # The merged set is used unless a color set is specified.
+      # Returns 'unknown' if the RGB array is not found.
          set = merged_set if set.nil?
          name = (set.class == Hash) ? set.key(rgb_array) : color_set(set).key(rgb_array)
          name.nil? ? 'unknown' : name
@@ -228,7 +224,7 @@ class Colors
       # Convert an integer rgba array (0 - 255) to float values (0.0 - 1.0).
       # Returns the original item if it doesn't contain integers.
          rgba = int_rgba.map do |item|
-            return int_rgba unless item.class == Integer
+            return int_rgba unless item.class == Fixnum
             item = [0.0, (Float(item) / 255).round(2), 1.0].sort[1]
          end
       end
@@ -262,14 +258,22 @@ class Colors
    #  ――― Instance Methods ―――
    ##################################################
 
-   def set_color(color_name = 'gray', set = 'Basics', transparency = nil)
-   # Set color attributes for the specified name.
+   def set_color(color = 'gray', set = 'Basics', transparency = nil)
+   # Set color attributes for a color name or index from a color set name or hash.
    # A nil transparency keeps the current setting.
-   # Returns the new color - a gray color is used if the name is not specified or found.
+   # Returns the new color - a gray color is used if the name or index is not found.
       set = (set.class == Hash) ? set : Colors.color_set(set)
+      if color.class == Fixnum  # index
+         count = set.length - 2 # don't count palette keys
+         index = color % count  # wrap
+         index = (index < 0) ? index + count : index
+         color = set.keys[index + 2]
+         @rgb = set[color]
+      else
+         @rgb = Colors.rgb_by_name(color, set)
+      end
+      @name = (@rgb == [128, 128, 128]) ? 'gray' : color
       @set = set[:palette_name]
-      @rgb = Colors.rgb_by_name(color_name, set)
-      @name = (@rgb == [128, 128, 128]) ? 'gray' : color_name
       alpha(transparency) unless transparency.nil?
       @rgba = @rgb + [@alpha]
       @hex = Colors.hex_from_rgb(@rgb)
@@ -277,6 +281,21 @@ class Colors
    end
 
 
+   def offset(amount = 0)
+   # Set a new color by offsetting from the current color by a +/- integer
+   # amount or percentage (0.0 - 1.0).  Indexes wrap to the number of colors.
+   # Returns the new color.
+      return self if amount == 0
+      set = Colors.color_set(@set)
+      count = set.length - 2
+      if amount.class == Float && amount <= 1.0  # percent
+         amount = Integer(amount * count + 0.05)
+      end
+      index = set.keys.index(@name) - 2 + amount
+      set_color(index, set, nil)  # set the new color
+   end
+   
+   
    def alpha(transparency)
    # Set the color's transparency from an integer (0 - 255) or percentage (0.0 - 1.0).
    # Returns the alpha value (0 - 255).
@@ -288,92 +307,56 @@ class Colors
    end
 
 
-   def increment(amount = 0)
-   # Increment (or decrement) the color index.
-   # Returns the new index.
-      set = Colors.color_set(@set)
-      index = set.keys.index(@name) - 2
-      index = 0 if index.nil?  # unknown name
-      count = set.length - 2
-      color_index = ((index + amount) % count)  # wrap
-      color_index = (color_index < 0) ? color_index + count : color_index
-      @name = set.keys[color_index + 2]
-      @rgb = set[@name]
-      @rgba = @rgb + [@alpha]
-      @hex = Colors.hex_from_rgb(@rgb)
-      color_index + 2
-   end
-   
-   
-   def index
-   # Return the index of the current color.
-      set = Colors.color_set(@set)
-      index = set.keys.index(@name) - 2
-   end
-
-
-   def opposite(name_lookup = nil)
-   # Set complementary RGB values.
+   def opposite(lookup = nil)
+   # Set the color to its complementary RGB values.
    # Returns the [r, g, b] array.
       @rgb = [ 255 - @rgb[0], 255 - @rgb[1], 255 - @rgb[2] ]
-      update(name_lookup)
+      update(lookup)
    end
 
 
-   def contrast(name_lookup = nil)
-   # Set contrasting black or white RGB values.
+   def contrast(lookup = nil)
+   # Set the color to contrasting black or white RGB values.
    # Returns the [r, g, b] array.
       sum = @rgb.inject(0){|sum, x| sum + x }
       @rgb = (sum / 3) < 128 ? [255, 255, 255] : [0, 0, 0]
-      update(name_lookup)
+      update(lookup)
    end
 
 
-   def lshift(name_lookup = nil)
-   # Shift RGB array values left (b <- r, r <- g, g <- b).
+   def lshift(lookup = nil)
+   # Shift the color's RGB array values left (b <- r, r <- g, g <- b).
    # Returns the [r, g, b] array.
       @rgb = [ @rgb[1], @rgb[2], @rgb[0] ]
-      update(name_lookup)
+      update(lookup)
    end
 
 
-   def rshift(name_lookup = nil)
-   # Shift RGB array values right (r -> g, g -> b, b -> r).
+   def rshift(lookup = nil)
+   # Shift the color's RGB array values right (r -> g, g -> b, b -> r).
    # Returns the [r, g, b] array.
       @rgb = [ @rgb[2], @rgb[0], @rgb[1] ]
-      update(name_lookup)
+      update(lookup)
    end
 
 
-   def shade(amount = 0.0, name_lookup = nil)
-   # Subtract shade (toward black) from RGB array values.
-   # Amount can be an integer (0 - 255) or percentage (0.0 - 1.0).
+   def tint(amount = 0.0, lookup = nil)
+   # Add tint (toward white) or subtract shade (toward black) to RGB array values.
+   # Amount can be +/- integer (0 - 255) or percentage (0.0 - 1.0).
    # Returns the [r, g, b] array.
-      @rgb = @rgb.each_with_object([]) do |item, result|
-         if amount.class == Float && amount <= 1.0
-            value = Integer(item * (1.0 - amount) + 0.5)
+      @rgb = @rgb.each_with_object([]) do |component, result|
+         if amount.class == Float && amount.abs <= 1.0
+            if amount < 0
+               value = Integer(component * (1.0 + amount) + 0.5)
+            else
+               value = Integer(component + ((255 - component) * amount) + 0.5)
+            end
          else
-            value = item - Integer(amount)
+            value = component + Integer(amount)
          end
          result << [0, value, 255].sort[1]
       end
-      update(name_lookup)
-   end
-
-
-   def tint(amount = 0.0, name_lookup = nil)
-   # Add tint (toward white) to RGB array values.
-   # Amount can be an integer (0 - 255) or percentage (0.0 - 1.0).
-   # Returns the [r, g, b] array.
-      @rgb = @rgb.each_with_object([]) do |item, result|
-         if amount.class == Float && amount <= 1.0
-            value = Integer(item + ((255 - item) * amount) + 0.5)
-         else
-            value = item + Integer(amount)
-         end
-         result << [0, value, 255].sort[1]
-      end
-      update(name_lookup)
+      update(lookup)
    end
 
 
@@ -383,13 +366,13 @@ class Colors
    
    private
 
-   def update(name_lookup = nil)
-   # Update color attributes from the current RGB value.
-   # The name isn't updated by default, as most likely there won't be a match.
+   def update(lookup = nil)
+   # Update color attributes for the current RGB value in the current color set.
+   # The name isn't looked up by default, as most RGB changes will result in 'unknown'.
    # Returns the [r, g, b] array.
       @rgba = @rgb + [@alpha]
       @hex = Colors.hex_from_rgb(@rgb)
-      @name = Colors.lookup(@rgb) unless name_lookup.nil?
+      @name = Colors.name_from_rgb(@rgb, @set) unless lookup.nil?
       @rgb
    end
 
