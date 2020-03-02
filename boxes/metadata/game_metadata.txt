@@ -2,5 +2,5 @@ devid=menace_enterprises
 devtitle=red_menace
 gameid=Boxes
 gametitle=Boxes
-version=1.0
+version=1.1
 icon=metadata/Made with DR.png

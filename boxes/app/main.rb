@@ -1,6 +1,7 @@
 
 #
 #  An example demonstrating the Color class.
+#  Built with the v36 release. 
 #
 #  Initial color display is from the HTML set
 #
@@ -58,7 +59,7 @@ class Sample
                           font: 'fonts/Arial Rounded Bold.ttf' }
       $starting -= 1
    end
-   
+      
 end
 
 
@@ -84,7 +85,7 @@ class Boxes
       state.boxes.slice!(0, $increment)  # cycle in a few new rectangles
       state.boxes += $increment.map { rectangle }
    end
-   
+      
 end
 
 
@@ -128,11 +129,13 @@ def tick args  # the main render loop
 end
 
 
-$full_set = Colors.merged_set  # all the colors
+begin :main
+   $full_set = Colors.merged_set  # all the colors
 
-$starting = 60 * 30  # timeout
-change_speed($speed = 4)
+   $starting = 60 * 30  # timeout
+   change_speed($speed = 4)
 
-$samples = Sample.new
-$example = Boxes.new
+   $samples = Sample.new
+   $example = Boxes.new
+end
 

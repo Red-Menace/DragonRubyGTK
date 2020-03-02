@@ -1,8 +1,5 @@
 
 #
-#  Created by Red_Menace on 05-11-19, last updated/reviewed on 02-19-20
-#  Copyright (c) 2019-2020 Menace Enterprises, red_menace|at|menace-enterprises|dot|com
-#
 #  HTML color name definitions by group (RGB 0 - 255).
 #  https://www.w3schools.com/colors/colors_groups.asp
 #  https://www.rapidtables.com/web/color/html-color-codes.html
