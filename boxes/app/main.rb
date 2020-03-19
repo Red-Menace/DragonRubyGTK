@@ -1,7 +1,7 @@
 
 #
 #  An example demonstrating the Color class.
-#  Built with the v36 release. 
+#  Built with the v38 release. 
 #
 #  Initial color display is from the HTML set
 #
@@ -119,17 +119,7 @@ def do_key_press(keyboard)  # handle key presses (modifier keys are ignored)
 end
 
 
-def tick args  # the main render loop
-   $samples.outputs = args.outputs
-   $example.state = args.state
-   $example.inputs = args.inputs
-   $example.outputs = args.outputs
-   $starting > 0 ? $samples.show : $example.main
-   do_key_press(args.inputs.keyboard) if args.inputs.keyboard.truthy_keys.length > 1
-end
-
-
-begin :main
+def setup  # initial setup
    $full_set = Colors.merged_set  # all the colors
 
    $starting = 60 * 30  # timeout
@@ -137,5 +127,16 @@ begin :main
 
    $samples = Sample.new
    $example = Boxes.new
+end
+
+
+def tick args  # the main render loop
+   setup if args.state.tick_count == 0
+   $samples.outputs = args.outputs
+   $example.state = args.state
+   $example.inputs = args.inputs
+   $example.outputs = args.outputs
+   $starting > 0 ? $samples.show : $example.main
+   do_key_press(args.inputs.keyboard) if args.inputs.keyboard.truthy_keys.length > 1
 end
 
