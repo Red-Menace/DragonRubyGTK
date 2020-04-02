@@ -1,5 +1,5 @@
 
-### DragonRuby GTK v36 ctags (emacs) extracted 2020-03-03
+### DragonRuby GTK v43 ctags (emacs) extracted 2020-03-31
 ----
 
 #### ./dragon/numeric\_deprecated.rb
@@ -51,7 +51,7 @@
      - def << other
 - module GTK
    - class Outputs   # Each Outputs is a single render pass to a render target (or the window framebuffer).
-     - def initialize target = nil
+     - def initialize opts = {}
      - def \_\_initialize\_primitives
      - def default\_background\_color
      - def background\_color
@@ -60,6 +60,7 @@
      - def clear\_non\_static
      - def clear\_non\_static\_reserved
      - def clear
+     - def inspect
      - def serialize
 
 #### ./dragon/string.rb
@@ -71,7 +72,7 @@
    - def wrapped\_lines length
    - def wrap length
    - def multiline?
-   - def indent\_lines amount
+   - def indent\_lines amount, char = " "
    - def quote
    - def trim
    - def trim!
@@ -96,6 +97,12 @@
      - def self.solid\_border\_contract
      - def self.label\_contract
      - def self.sprite\_contract
+     - def self.code\_for\_class\_attributes\_as\_hash klass
+     - def self.serialization\_implementation\_help klass
+   - def serialize
+   - def inspect
+   - def to\_s
+   - def self.serialization\_too\_large
 
 #### ./dragon/array.rb
 
@@ -152,6 +159,7 @@
 
 - module GTK
    - module Geometry
+     - def self.cubic\_bezier t, a, b, c, d
      - def inside\_rect? outer
      - def intersect\_rect? other, tolerance = 0.1
      - def intersects\_rect? *args
@@ -216,10 +224,11 @@
    - def between? n, n2
    - def remainder\_of\_divide n
    - def ease\_extended tick\_count\_override, duration, default\_before, default\_after, *definitions
-   - def ease\_initial\_value *definitions
-   - def ease\_final\_value *definitions
    - def global\_ease duration, *definitions
    - def ease duration, *definitions
+   - def ease\_spline\_extended tick\_count\_override, duration, spline
+   - def global\_ease\_spline duration, spline
+   - def ease\_spline duration, spline
    - def to\_radians
    - def to\_degrees
    - def to\_square x, y, anchor\_x = 0.5, anchor\_y = nil
@@ -283,6 +292,8 @@
    - def replace\_infinity scalar
    - def pos?
    - def neg?
+- class Integer
+   - def round *args
 
 #### ./dragon/nil\_class\_false\_class.rb
 
@@ -310,7 +321,10 @@
 - module GTK
    - class Entity
      - def self.id!
+     - def self.\_\_reset\_id\_\_!
      - def self.strict\_entities
+     - def self.parse\_from\_hash data
+     - def self.load\_hash\_value value
      - def self.new\_entity entity\_type, init\_hash = nil, block = nil
      - def self.new\_entity\_strict entity\_type, init\_hash = nil, block = nil
 
@@ -381,6 +395,10 @@
    - def tile\_y
    - def tile\_w
    - def tile\_h
+   - def source\_x
+   - def source\_y
+   - def source\_w
+   - def source\_h
    - def flip\_horizontally
    - def flip\_vertically
    - def angle\_anchor\_x
@@ -409,6 +427,10 @@
    - def tile\_y= value
    - def tile\_w= value
    - def tile\_h= value
+   - def source\_x= value
+   - def source\_y= value
+   - def source\_w= value
+   - def source\_h= value
    - def flip\_horizontally= value
    - def flip\_vertically= value
    - def angle\_anchor\_x= value
@@ -416,11 +438,12 @@
    - def angle= value
    - def at= value
    - def path
-   - def path=
+   - def path= value
    - def rect
    - def new\_entity\_strict entity\_type, &block
    - def new\_entity entity\_type, &block
-   - def self.pretty\_format hash
+   - def pretty\_format char = " "
+   - def self.pretty\_format hash, char = " "
    - def left
    - def right
    - def bottom
@@ -455,6 +478,7 @@
 - module GTK
    - class Keyboard
      - def initialize
+     - def p
      - def left
      - def right
      - def up
@@ -463,6 +487,8 @@
      - def serialize
      - def inspect
      - def to\_s
+     - def keys
+     - def key
 - module GTK
    - class ControllerKeys
      - def clear
@@ -488,6 +514,10 @@
      - def top; y; end
      - def bottom; y; end
      - def created\_at\_elapsed
+     - def to\_hash
+     - def serialize
+     - def inspect
+     - def to\_s
    - class Mouse
      - def initialize
      - def point
@@ -496,6 +526,8 @@
      - def down
      - def position
      - def serialize
+     - def to\_s
+     - def inspect
 - module GTK
    - class Inputs
      - def initialize
@@ -509,13 +541,14 @@
      - def click
      - def controller\_one
      - def controller\_two
+     - def clear
      - def serialize
 
 #### ./dragon/primitive.rb
 
 - module GTK
    - module Primitive
-     - module Common
+      - module Common
          - def primitive\_marker
          - def merge *args
      - module Point
@@ -556,8 +589,8 @@
          - def rect\_shift\_up v
          - def rect\_shift\_down v
          - def to\_hash
-     - module Determined
-     - module Color
+      - module Determined
+      - module Color
          - def looks\_like\_a\_sprite?
          - def r
          - def r= value
@@ -567,13 +600,13 @@
          - def b= value
          - def a
          - def a= value
-     - module Solid
+      - module Solid
          - def to\_hash
          - def primitive\_marker
-     - module Border
+      - module Border
          - def primitive\_marker
          - def to\_hash
-     - module Label
+      - module Label
          - def primitive\_marker
          - def text
          - def text= value
@@ -595,7 +628,7 @@
          - def to\_hash
          - def w
          - def h
-     - module Line
+      - module Line
          - def primitive\_marker
          - def x
          - def x= value
@@ -608,7 +641,7 @@
          - def w
          - def h
          - def to\_hash
-     - module Sprite
+      - module Sprite
          - def primitive\_marker
          - def path
          - def path= value
@@ -638,8 +671,16 @@
          - def angle\_anchor\_x= value
          - def angle\_anchor\_y
          - def angle\_anchor\_y= value
+         - def source\_x
+         - def source\_x= value
+         - def source\_y
+         - def source\_y= value
+         - def source\_w
+         - def source\_w= value
+         - def source\_h
+         - def source\_h= value
          - def to\_hash
-     - module ConversionCapabilities
+      - module ConversionCapabilities
          - def raise\_ambigous! m
          - def mark\_assert!
          - def mark\_as\_point!
@@ -752,15 +793,23 @@
      - def on\_ticks
      - def on\_tick *args
      - def take\_screenshot= value
+     - def save\_state file\_name
+     - def load\_state file\_name
+     - def take\_screenshot
 
 #### ./dragon/runtime.rb
 
+- module FFI
+   - class Draw
+     - def serialize
+     - def inspect
+     - def to\_s
 - module GTK
    - class Runtime
      - def initialize platform, production, width, height, argv
      - def schedule\_callback tick\_count, &callback
      - def cli\_arguments
-     - def start!
+     - def process\_argsv
      - def quit!
      - def request\_quit
      - def quit\_requested?
@@ -777,7 +826,6 @@
      - def record\_input\_history name, value\_1, value\_2, value\_count, clear\_cache = false
      - def write\_file file\_name, text
      - def append\_file file\_name, text
-     - def save\_state file\_name
      - def read\_file file\_name
      - def parse\_xml xmlstr, stripcontent=true
      - def parse\_xml\_file fname, stripcontent=true
@@ -794,7 +842,6 @@
      - def http\_head url, extra\_headers=nil
      - def http\_post url, form\_fields=nil, extra\_headers=nil
      - def http\_put url, fname, extra\_headers=nil
-     - def load\_state file\_name
      - def export! with\_comments = nil, file\_name\_override = nil
      - def passes
      - def toast id, message
@@ -806,6 +853,7 @@
      - def reset\_state
      - def docs
      - def reset rng\_override = nil, seed: seed
+     - def \_\_reset\_\_ rng\_override = nil, seed: seed
      - def paused?
      - def pause!
      - def unpause!
@@ -858,8 +906,9 @@
      - def slowmo! factor
      - def notify\_subdued!
      - def notify! message, duration = 300
-     - def take\_screenshot
      - def system cmd
+     - def serialize\_state *opts
+     - def deserialize\_state *args
 
 #### ./dragon/assert.rb
 
@@ -883,7 +932,7 @@
      - def draw\_border s
      - def draw\_screenshots
      - def should\_redraw?
-     - def draw\_clear r, g, b
+     - def draw\_clear r, g, b, a
      - def primitives pass
 
 #### ./dragon/controller\_config.rb
@@ -928,6 +977,7 @@
    - module RuntimeCBridge
      - def c\_bridge\_init \_\_sender
      - def mark\_ruby\_file\_for\_reload path
+     - def reload\_history\_for path
      - def get\_ruby\_reload\_list
      - def reload\_complete
      - def print\_help\_when\_mouse\_clicked
@@ -968,6 +1018,9 @@
      - def rawjoystick\_axis jid, axis, value
      - def rawjoystick\_hat jid, hat, value
      - def rawjoystick\_button jid, button, pressed
+     - def show\_cursor
+     - def hide\_cursor
+     - def cursor\_shown?
 
 #### ./dragon/runtime\_framerate.rb
 
@@ -986,7 +1039,8 @@
 
 - module GTK
    - module Easing
-     - def self.exec\_definitions start\_tick, current\_tick, end\_tick, default\_before, default\_after, *definitions
+     - def self.ease\_extended start\_tick, current\_tick, end\_tick, default\_before, default\_after, *definitions
+     - def self.ease\_spline\_extended start\_tick, current\_tick, end\_tick, spline
      - def self.initial\_value *definitions
      - def self.final\_value *definitions
      - def self.exec\_definition definition, start\_tick, duration, x
@@ -1027,6 +1081,8 @@
    - def self.\_\_meta\_\_
 - module ValueType
 - class Object
+   - def self.attr\_accessor *vars
+   - def self.attributes
    - def self.new *args
    - def self.gtk\_args
    - def self.attr\_sprite
@@ -1063,8 +1119,12 @@
    - def xrepl
    - def comment
    - def serialize
+   - def inspect
    - def id
    - def associate hash = nil
+   - def let
+   - def greeting
+   - def greeting
 
 #### ./dragon/directional\_input\_helper\_methods.rb
 
@@ -1088,6 +1148,7 @@
      - def self.join\_lines args
      - def self.headline name
      - def self.dynamic\_block
+     - def self.puts\_error *args
      - def self.puts\_info *args
      - def self.puts\_once *ids, message
      - def self.puts\_once\_info *ids, message
@@ -1114,6 +1175,7 @@
    - def log\_bright\_magenta *args
    - def log\_bright\_cyan *args
    - def log\_bright\_white *args
+   - def log\_error *args
    - def log\_info *args
    - def log\_once *ids, message
    - def log\_once\_info *ids, message
@@ -1121,15 +1183,22 @@
 #### ./dragon/recording.rb
 
 - module GTK
+   - class Replay
+     - def self.start file\_name = nil
+     - def self.stop
    - class Recording
      - def initialize runtime
      - def tick
-     - def start\_recording seed\_number
+     - def start\_recording seed\_number = nil
+     - def start seed\_number = nil
      - def is\_replaying?
      - def is\_recording?
-     - def stop\_recording file\_name
-     - def start\_replay file\_name
-     - def stop\_replay
+     - def stop file\_name = nil
+     - def cancel
+     - def stop\_recording file\_name = nil
+     - def stop\_recording\_core
+     - def start\_replay file\_name = nil
+     - def stop\_replay notification\_message =  "Replay has been stopped."
      - def record\_input\_history name, value\_1, value\_2, value\_count, clear\_cache = false
      - def stage\_replay\_values
 
@@ -1139,8 +1208,8 @@
    - class OpenEntity
      - def self.parse\_from\_hash data
      - def initialize name = nil
-     - def self.load\_hash\_value value
      - def hash
+     - def as\_hash
      - def == other
      - def entity\_id
      - def attributes
@@ -1170,17 +1239,20 @@
 
 - module GTK
    - class StrictEntity
+     - def self.parse\_from\_hash data
      - def initialize name, init\_hash = nil, block = nil
      - def to\_s
+     - def inspect
      - def is\_a? klass
      - def method\_missing m, *args
      - def created\_at\_elapsed
      - def global\_created\_at\_elapsed
      - def hash
+     - def as\_hash
      - def to\_hash
-     - def inspect
      - def set! key, value
      - def clear!
+     - def []= key, value
      - def [] key
 
 #### ./dragon/runtime\_hotload.rb
@@ -1192,6 +1264,8 @@
      - def files\_to\_reload
      - def core\_files\_to\_reload
      - def init\_mtimes file
+     - def backup\_directory
+     - def create\_backup file
      - def reload\_ruby\_file file
      - def hotload\_source\_files
      - def check\_mailbox
@@ -1204,6 +1278,7 @@
 
 - module Serialize
    - def serialize
+   - def inspect
 
 #### ./dragon/console.rb
 
@@ -1215,6 +1290,8 @@
      - def load\_history
      - def disable
      - def enable
+     - def addsprite obj
+     - def add\_primitive obj
      - def addtext obj
      - def ready?
      - def hidden?
@@ -1229,6 +1306,7 @@
      - def toast id, *messages
      - def perma\_toast id = nil, messages
      - def toast id = nil, *messages
+     - def console\_toggle\_keys
      - def console\_toggle\_key\_down? args
      - def eval\_the\_set\_command
      - def inputs\_scroll\_up\_full? args
@@ -1241,6 +1319,7 @@
      - def inputs\_clear\_command? args
      - def scroll\_down\_half
      - def process\_inputs args
+     - def write\_primitive\_and\_return\_offset args, left, y, str, errorinfo, headerinfo, txtinfo, line\_height
      - def write\_line args, left, y, str, errorinfo, headerinfo, txtinfo
      - def render args
      - def render\_log\_offset args
@@ -1251,7 +1330,10 @@
      - def subdued\_markers
      - def calc args
      - def tick args
+     - def set\_command\_with\_history\_silent command, histories, show\_reason = nil
+     - def set\_command\_with\_history command, histories, show\_reason = nil
      - def set\_command command, show\_reason = nil
+     - def set\_command\_silent command, show\_reason = nil
 
 #### ./dragon/trace.rb
 
@@ -1275,6 +1357,8 @@
      - def untransform\_x x
      - def untransform\_y y
      - def transform\_y y
+     - def ffi\_draw
+     - def ffi\_draw= value
      - def origin\_bottom\_left!
      - def origin\_center!
      - def w
