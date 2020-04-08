@@ -40,12 +40,13 @@
 #  Instance methods:
 #     c.set_color(color = 'gray', set = 'Basics', transparency = nil)
 #     c.offset(amount = 0)
-#     c.alpha(transparency)
+#     c.alpha(transparency = 255)
 #     c.opposite(lookup = nil)
 #     c.contrast(lookup = nil)
 #     c.lshift(lookup = nil)
 #     c.rshift(lookup = nil)
 #     c.tint(amount = 0.0, lookup = nil)
+#     c.add(rgb_to_add = [0,0,0], lookup = nil)
 #
 
 
@@ -199,8 +200,8 @@ class Colors
       def rgb_from_hex(hex_string)
       # Get RGB for a hexadecimal string (0080FF, etc).
       # Returns an [r, g, b] array of integer (0 - 255) values.
-         hex_string += '000000'  # pad for incorrect length
          hex_string[0] = '' if hex_string.start_with?('#')
+         hex_string += '000000'  # pad for incorrect length
          [ hex_string[0..1].hex, hex_string[2..3].hex, hex_string[4..5].hex ]
       end
 
@@ -289,7 +290,7 @@ class Colors
    end
    
    
-   def alpha(transparency)
+   def alpha(transparency = 255)
    # Set the color's transparency from an integer (0 - 255) or percentage (0.0 - 1.0).
    # Returns the alpha value (0 - 255).
       @alpha = transparency
@@ -349,6 +350,20 @@ class Colors
          end
          result << [0, value, 255].sort[1]
       end
+      update(lookup)
+   end
+
+
+   def add(rgb_to_add = [0,0,0], lookup = nil)
+   # Add the specified +/- RGB component values to the color.
+   # Updates the color attributes unless any items are nil or there is no change.
+   # Returns the new or current [r, g, b] array.
+      new_rgb = []
+      (0..2).each do |index|
+         return @rgb if (value = rgb_to_add[index]).nil?
+         new_rgb[index] = [0, @rgb[index] + value, 255].sort[1]
+      end
+      @rgb == new_rgb ? (return @rgb) : (@rgb = new_rgb)
       update(lookup)
    end
 
