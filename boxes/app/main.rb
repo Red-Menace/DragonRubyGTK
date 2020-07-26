@@ -137,6 +137,6 @@ def tick args  # the main render loop
    $example.inputs = args.inputs
    $example.outputs = args.outputs
    $starting > 0 ? $samples.show : $example.main
-   do_key_press(args.inputs.keyboard) if args.inputs.keyboard.truthy_keys.length > 1
+   do_key_press(args.inputs.keyboard) unless args.inputs.keyboard.truthy_keys.empty?
 end
 
