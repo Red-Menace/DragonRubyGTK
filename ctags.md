@@ -1,12 +1,18 @@
 
-### DragonRuby GTK v43 ctags (emacs) extracted 2020-03-31
+### DragonRuby GTK ctags (emacs) extraction 2020-07-26 12:00
+
+#### Select sources are also available on [GitHub](https://github.com/DragonRuby/dragonruby-game-toolkit-contrib/tree/master/dragon)  
+
 ----
+
 
 #### ./dragon/numeric\_deprecated.rb
 
 - module NumericDeprecated
    - def perc\_to\_zero start, duration
    - def perc\_to\_one start, duration
+   - def pos?
+   - def neg?
 
 #### ./dragon/outputs\_deprecated.rb
 
@@ -33,6 +39,15 @@
      - def static\_reserved= value
      - def static\_background\_color= value
      - def static\_background\_color
+
+#### ./dragon/runtime\_docs.rb
+
+- module RuntimeDocs
+   - def docs\_class
+   - def docs\_reset
+   - def docs\_calcstringbox
+   - def tick args
+- class GTK::Runtime
 
 #### ./dragon/outputs.rb
 
@@ -62,6 +77,16 @@
      - def clear
      - def inspect
      - def serialize
+
+#### ./dragon/openentity\_docs.rb
+
+- module OpenEntityDocs
+   - def docs\_class
+   - def tick args
+   - def tick args
+   - def docs\_as\_hash
+   - def tick args
+- class GTK::OpenEntity
 
 #### ./dragon/string.rb
 
@@ -99,10 +124,42 @@
      - def self.sprite\_contract
      - def self.code\_for\_class\_attributes\_as\_hash klass
      - def self.serialization\_implementation\_help klass
-   - def serialize
-   - def inspect
-   - def to\_s
-   - def self.serialization\_too\_large
+     - def serialize
+     - def inspect
+     - def to\_s
+     - def self.serialization\_too\_large
+
+#### ./dragon/console\_color.rb
+
+- module GTK
+   - class Console
+     - class Color
+       - def initialize(color)
+       - def mult\_alpha(alpha\_modifier)
+       - def to\_a
+       - def to\_h
+
+#### ./dragon/array\_docs.rb
+
+- module ArrayDocs
+   - def docs\_method\_sort\_order
+   - def docs\_include\_any?
+   - def docs\_class
+   - def docs\_reject\_nil
+   - def docs\_reject\_false
+   - def docs\_product
+   - def docs\_map\_2d
+   - def docs\_any\_intersect\_rect?
+   - class Player
+       - def initialize x, y, w, h
+       - def serialize
+       - def inspect
+       - def to\_s
+   - def docs\_map
+   - def tick args
+   - def docs\_each
+   - def tick args
+   - class Array
 
 #### ./dragon/array.rb
 
@@ -123,12 +180,13 @@
 
 #### ./dragon/attr\_sprite.rb
 
-- module AttrSprite
-   - def primitive\_marker
+- module AttrRect
    - def left
    - def right
    - def bottom
    - def top
+- module AttrSprite
+   - def primitive\_marker
    - def sprite
    - def x1
    - def x1= value
@@ -178,6 +236,7 @@
      - def self.ray\_test point, line
      - def self.line\_rect line
      - def self.line\_intersect line\_one, line\_two
+     - def self.contract\_intersect\_rect?
      - def self.intersect\_rect? rect\_one, rect\_two, tolerance = 0.1
      - def self.to\_square size, x, y, anchor\_x = 0.5, anchor\_y = nil
      - def self.distance point\_one, point\_two
@@ -203,17 +262,12 @@
    - def elapsed\_time\_percent duration
    - def new?
    - def elapsed? offset, tick\_count\_override = nil
-   - def frame\_index frame\_count, hold\_for, repeat, tick\_count\_override = nil
+   - def frame\_index *opts
    - def zero
-   - def zero?
    - def one
    - def two
    - def five
    - def ten
-   - def above? v
-   - def below? v
-   - def left\_of? v
-   - def right\_of? v
    - def shift\_right i
    - def shift\_left i
    - def shift\_up i
@@ -221,7 +275,6 @@
    - def randomize *definitions
    - def rand\_sign
    - def rand\_ratio
-   - def between? n, n2
    - def remainder\_of\_divide n
    - def ease\_extended tick\_count\_override, duration, default\_before, default\_after, *definitions
    - def global\_ease duration, *definitions
@@ -287,15 +340,12 @@
    - def * other
    - def / other
    - def serialize
-   - def clamp lower, higher
    - def sign
    - def replace\_infinity scalar
-   - def pos?
-   - def neg?
 - class Integer
    - def round *args
 
-#### ./dragon/nil\_class\_false\_class.rb
+#### ./dragon/nil\_class_false\_class.rb
 
 - module NilClassFalseClass
    - def feels\_like\_an\_array? name
@@ -316,6 +366,17 @@
 - class FalseClass
 - class TrueClass
 
+#### ./dragon/kernel\_docs.rb
+
+- module KernelDocs
+   - def docs\_method\_sort\_order
+   - def docs\_class
+   - def docs\_tick\_count
+   - def docs\_global\_tick\_count
+   - def docs\_export\_docs!
+   - def export\_docs!
+- module Kernel
+
 #### ./dragon/entity.rb
 
 - module GTK
@@ -335,9 +396,6 @@
      - def initialize runtime, recording
      - def tick\_count
      - def tick\_count= value
-     - def gtk
-     - def state
-     - def state= value
      - def serialize
      - def destructure
      - def clear\_render\_targets
@@ -360,6 +418,118 @@
      - def mouse
      - def controller\_one
      - def controller\_two
+
+#### ./dragon/runtime/c\_bridge.rb
+
+- module GTK
+   - class Runtime
+     - module CBridge
+       - def c\_bridge\_init \_\_sender
+       - def mark\_ruby\_file\_for\_reload path
+       - def reload\_history\_for path
+       - def get\_ruby\_reload\_list
+       - def reload\_complete
+       - def print\_help\_when\_mouse\_clicked
+       - def mouse\_move mousex, mousey, sender = false
+       - def update\_mouse\_buttons newbuttons
+       - def mouse\_button\_pressed button, sender = false
+       - def mouse\_pressed mousex, mousey, sender = false
+       - def mouse\_button\_up button, sender = false
+       - def mouse\_up mousex, mousey, sender = false
+       - def mouse\_wheel x, y, sender = false
+       - def textinput str
+       - def key\_down\_in\_game raw\_key, modifier
+       - def key\_up\_in\_game raw\_key, modifier, sender = false
+       - def key\_down\_raw raw\_key, modifier, sender = false
+       - def key\_up\_raw raw\_key, modifier, sender = false
+       - def controller\_key\_event player\_num, raw\_key, event, sender = false
+       - def key\_down\_player\_one raw\_key, sender = false
+       - def key\_down\_player\_two raw\_key, sender = false
+       - def key\_held\_player\_one raw\_key, sender = false
+       - def key\_held\_player\_two raw\_key, sender = false
+       - def key\_up\_player\_one raw\_key, sender = false
+       - def key\_up\_player\_two raw\_key, sender = false
+       - def controller\_key\_down player\_num, raw\_key, sender = false
+       - def controller\_key\_held player\_num, raw\_key, sender = false
+       - def controller\_key\_up player\_num, raw\_key, sender = false
+       - def window\_keyboard\_focus\_changed gained
+       - def window\_mouse\_focus\_changed gained
+       - def analog\_to\_perc value
+       - def left\_analog\_x\_player\_1 value, sender = false
+       - def left\_analog\_y\_player\_1 value, sender = false
+       - def right\_analog\_x\_player\_1 value, sender = false
+       - def right\_analog\_y\_player\_1 value, sender = false
+       - def left\_analog\_x\_player\_2 value, sender = false
+       - def left\_analog\_y\_player\_2 value, sender = false
+       - def right\_analog\_x\_player\_2 value, sender = false
+       - def right\_analog\_y\_player\_2 value, sender = false
+       - def background\_color
+       - def rawjoystick\_connected jid, joystickname, guid
+       - def rawjoystick\_disconnected jid
+       - def rawjoystick\_axis jid, axis, value
+       - def rawjoystick\_hat jid, hat, value
+       - def rawjoystick\_button jid, button, pressed
+
+#### ./dragon/runtime/draw.rb
+
+- module GTK
+   - class Runtime
+     - module Draw
+       - def draw\_solid s
+       - def draw\_sprite s
+       - def draw\_screenshot s
+       - def draw\_label l
+       - def draw\_line l
+       - def draw\_border s
+       - def draw\_screenshots
+       - def draw\_clear r, g, b, a
+       - def primitives pass
+
+#### ./dragon/runtime/hotload.rb
+
+- module GTK
+   - class Runtime
+     - module Hotload
+       - def hotload\_init
+       - def hotload\_on\_write\_file file\_name
+       - def files\_to\_reload
+       - def core\_files\_to\_reload
+       - def init\_mtimes file
+       - def reload\_ruby\_file file
+       - def hotload\_source\_files
+       - def check\_mailbox
+       - def hotload\_if\_needed
+       - def on\_load\_succeeded file
+       - def reload\_if\_needed file, force = false
+
+#### ./dragon/runtime/framerate.rb
+
+- module GTK
+   - class Runtime
+     - module Framerate
+       - def framerate\_init
+       - def delta\_framerate
+       - def reset\_framerate\_calculation
+       - def check\_framerate
+       - def framerate\_warning\_message
+       - def framerate\_below\_threshold?
+
+#### ./dragon/runtime/deprecated.rb
+
+- module GTK
+   - class Runtime
+     - module Deprecated
+       - def current\_framerate\_raw
+       - def suppress\_print\_help\_when\_mouse\_clicked
+       - def suppress\_framerate\_warning
+       - def suppress\_print\_help\_when\_mouse\_clicked= value
+       - def suppress\_framerate\_warning= value
+       - def on\_ticks
+       - def on\_tick *args
+       - def take\_screenshot= value
+       - def save\_state file\_name
+       - def load\_state file\_name
+       - def take\_screenshot
 
 #### ./dragon/hash.rb
 
@@ -485,25 +655,8 @@
      - def down
      - def clear
      - def serialize
-     - def inspect
      - def to\_s
-     - def keys
      - def key
-- module GTK
-   - class ControllerKeys
-     - def clear
-     - def truthy\_keys
-- module GTK
-   - class Controller
-     - def initialize
-     - def left\_right
-     - def up\_down
-     - def serialize
-     - def clear
-     - def up
-     - def down
-     - def left
-     - def right
 - module GTK
    - class MousePoint
      - def initialize x, y
@@ -524,10 +677,8 @@
      - def clear
      - def up
      - def down
-     - def position
      - def serialize
      - def to\_s
-     - def inspect
 - module GTK
    - class Inputs
      - def initialize
@@ -548,222 +699,257 @@
 
 - module GTK
    - module Primitive
-      - module Common
-         - def primitive\_marker
-         - def merge *args
+     - module Common
+       - def primitive\_marker
+       - def merge *args
      - module Point
-         - def x
-         - def x= value
-         - def x1
-         - def x1= value
-         - def y
-         - def y= value
-         - def y1
-         - def y1= value
-         - def w
-         - def h
-         - def right
-         - def left
-         - def top
-         - def bottom
-         - def point
-         - def left
-         - def bottom
-         - def to\_hash
-         - def associate hash = nil
+       - def x
+       - def x= value
+       - def x1
+       - def x1= value
+       - def y
+       - def y= value
+       - def y1
+       - def y1= value
+       - def w
+       - def h
+       - def right
+       - def left
+       - def top
+       - def bottom
+       - def point
+       - def left
+       - def bottom
+       - def to\_hash
+       - def associate hash = nil
      - module Rect
-         - def w
-         - def w= value
-         - def h
-         - def h= value
-         - def rect
-         - def right
-         - def x2
-         - def top
-         - def y2
-         - def center\_inside\_rect *other\_rect
-         - def shift\_rect *args
-         - def rect\_shift *args
-         - def rect\_shift\_right v
-         - def rect\_shift\_left v
-         - def rect\_shift\_up v
-         - def rect\_shift\_down v
-         - def to\_hash
-      - module Determined
-      - module Color
-         - def looks\_like\_a\_sprite?
-         - def r
-         - def r= value
-         - def g
-         - def g= value
-         - def b
-         - def b= value
-         - def a
-         - def a= value
-      - module Solid
-         - def to\_hash
-         - def primitive\_marker
-      - module Border
-         - def primitive\_marker
-         - def to\_hash
-      - module Label
-         - def primitive\_marker
-         - def text
-         - def text= value
-         - def defines\_enums?
-         - def size\_enum
-         - def size\_enum= value
-         - def alignment\_enum
-         - def alignment\_enum= value
-         - def r
-         - def r= value
-         - def g
-         - def g= value
-         - def b
-         - def b= value
-         - def a
-         - def a= value
-         - def font
-         - def font= value
-         - def to\_hash
-         - def w
-         - def h
-      - module Line
-         - def primitive\_marker
-         - def x
-         - def x= value
-         - def y
-         - def y= value
-         - def x2
-         - def x2= value
-         - def y2
-         - def y2= value
-         - def w
-         - def h
-         - def to\_hash
-      - module Sprite
-         - def primitive\_marker
-         - def path
-         - def path= value
-         - def angle
-         - def angle= value
-         - def a
-         - def a= value
-         - def r
-         - def r= value
-         - def g
-         - def g= value
-         - def b
-         - def b= value
-         - def tile\_x
-         - def tile\_x= value
-         - def tile\_y
-         - def tile\_y= value
-         - def tile\_w
-         - def tile\_w= value
-         - def tile\_h
-         - def tile\_h= value
-         - def flip\_horizontally
-         - def flip\_horizontally= value
-         - def flip\_vertically
-         - def flip\_vertically= value
-         - def angle\_anchor\_x
-         - def angle\_anchor\_x= value
-         - def angle\_anchor\_y
-         - def angle\_anchor\_y= value
-         - def source\_x
-         - def source\_x= value
-         - def source\_y
-         - def source\_y= value
-         - def source\_w
-         - def source\_w= value
-         - def source\_h
-         - def source\_h= value
-         - def to\_hash
-      - module ConversionCapabilities
-         - def raise\_ambigous! m
-         - def mark\_assert!
-         - def mark\_as\_point!
-         - def mark\_as\_rect!
-         - def mark\_as\_solid!
-         - def mark\_as\_border!
-         - def mark\_as\_line!
-         - def mark\_as\_label!
-         - def mark\_as\_primitive! type
-         - def mark\_as\_sprite!
-         - def mark\_as\_common!
-         - def path
-         - def path= value
-         - def inside\_rect? outer\_rect
-         - def intersects\_rect? other, tolerance = 0.1
-         - def intersect\_rect? other, tolerance = 0.1
-         - def rect
-         - def point
-         - def scale\_rect percentage, *anchors
-         - def scale\_rect\_extended *args
-         - def center\_inside\_rect *other\_rect
-         - def text
-         - def text= value
-         - def left
-         - def right
-         - def top
-         - def bottom
-         - def w\_half
-         - def width\_half
-         - def h\_half
-         - def height\_half
-         - def x
-         - def x1
-         - def shift\_rect *args
-         - def rect\_shift *args
-         - def rect\_shift\_right v
-         - def rect\_shift\_left v
-         - def rect\_shift\_up v
-         - def rect\_shift\_down v
-         - def x= value
-         - def x1= value
-         - def x2
-         - def y2
-         - def y= value
-         - def y
-         - def y1= value
-         - def y1
-         - def w
-         - def w= value
-         - def width
-         - def h
-         - def h= value
-         - def height
-         - def angle
-         - def angle= value
-         - def angle\_given\_point other\_point
-         - def angle\_to other\_point
-         - def angle\_from other\_point
-         - def a
-         - def a= value
-         - def point
-         - def solid
-         - def sprite
-         - def label
-         - def line
-         - def border
-         - def to\_hash
-         - def associate hash = nil
-         - def anchor\_rect anchor\_x, anchor\_y
-         - def sprites
-         - def solids
-         - def labels
-         - def borders
-         - def lines
-         - def outputs\_add\_dwim os, mark\_method, primitive\_name
-         - def outputs\_mark! o, mark\_method, primitive\_name
-         - def outputs\_resolved? o
-         - def outputs\_resolve\_collection target
+       - def w
+       - def w= value
+       - def h
+       - def h= value
+       - def rect
+       - def right
+       - def x2
+       - def top
+       - def y2
+       - def center\_inside\_rect *other\_rect
+       - def shift\_rect *args
+       - def rect\_shift *args
+       - def rect\_shift\_right v
+       - def rect\_shift\_left v
+       - def rect\_shift\_up v
+       - def rect\_shift\_down v
+       - def to\_hash
+     - module Determined
+     - module Color
+       - def looks\_like\_a\_sprite?
+       - def r
+       - def r= value
+       - def g
+       - def g= value
+       - def b
+       - def b= value
+       - def a
+       - def a= value
+     - module Solid
+       - def to\_hash
+       - def primitive\_marker
+     - module Border
+       - def primitive\_marker
+       - def to\_hash
+     - module Label
+       - def primitive\_marker
+       - def text
+       - def text= value
+       - def defines\_enums?
+       - def size\_enum
+       - def size\_enum= value
+       - def alignment\_enum
+       - def alignment\_enum= value
+       - def r
+       - def r= value
+       - def g
+       - def g= value
+       - def b
+       - def b= value
+       - def a
+       - def a= value
+       - def font
+       - def font= value
+       - def to\_hash
+       - def w
+       - def h
+     - module Line
+       - def primitive\_marker
+       - def x
+       - def x= value
+       - def y
+       - def y= value
+       - def x2
+       - def x2= value
+       - def y2
+       - def y2= value
+       - def w
+       - def h
+       - def to\_hash
+     - module Sprite
+       - def primitive\_marker
+       - def path
+       - def path= value
+       - def angle
+       - def angle= value
+       - def a
+       - def a= value
+       - def r
+       - def r= value
+       - def g
+       - def g= value
+       - def b
+       - def b= value
+       - def tile\_x
+       - def tile\_x= value
+       - def tile\_y
+       - def tile\_y= value
+       - def tile\_w
+       - def tile\_w= value
+       - def tile\_h
+       - def tile\_h= value
+       - def flip\_horizontally
+       - def flip\_horizontally= value
+       - def flip\_vertically
+       - def flip\_vertically= value
+       - def angle\_anchor\_x
+       - def angle\_anchor\_x= value
+       - def angle\_anchor\_y
+       - def angle\_anchor\_y= value
+       - def source\_x
+       - def source\_x= value
+       - def source\_y
+       - def source\_y= value
+       - def source\_w
+       - def source\_w= value
+       - def source\_h
+       - def source\_h= value
+       - def to\_hash
+     - module ConversionCapabilities
+       - def raise\_ambigous! m
+       - def mark\_assert!
+       - def mark\_as\_point!
+       - def mark\_as\_rect!
+       - def mark\_as\_solid!
+       - def mark\_as\_border!
+       - def mark\_as\_line!
+       - def mark\_as\_label!
+       - def mark\_as\_primitive! type
+       - def mark\_as\_sprite!
+       - def mark\_as\_common!
+       - def path
+       - def path= value
+       - def inside\_rect? outer\_rect
+       - def intersects\_rect? other, tolerance = 0.1
+       - def intersect\_rect? other, tolerance = 0.1
+       - def rect
+       - def point
+       - def scale\_rect percentage, *anchors
+       - def scale\_rect\_extended *args
+       - def center\_inside\_rect *other\_rect
+       - def text
+       - def text= value
+       - def left
+       - def right
+       - def top
+       - def bottom
+       - def w\_half
+       - def width\_half
+       - def h\_half
+       - def height\_half
+       - def x
+       - def x1
+       - def shift\_rect *args
+       - def rect\_shift *args
+       - def rect\_shift\_right v
+       - def rect\_shift\_left v
+       - def rect\_shift\_up v
+       - def rect\_shift\_down v
+       - def x= value
+       - def x1= value
+       - def x2
+       - def y2
+       - def y= value
+       - def y
+       - def y1= value
+       - def y1
+       - def w
+       - def w= value
+       - def width
+       - def h
+       - def h= value
+       - def height
+       - def angle
+       - def angle= value
+       - def angle\_given\_point other\_point
+       - def angle\_to other\_point
+       - def angle\_from other\_point
+       - def a
+       - def a= value
+       - def point
+       - def solid
+       - def sprite
+       - def label
+       - def line
+       - def border
+       - def to\_hash
+       - def associate hash = nil
+       - def anchor\_rect anchor\_x, anchor\_y
+       - def sprites
+       - def solids
+       - def labels
+       - def borders
+       - def lines
+       - def outputs\_add\_dwim os, mark\_method, primitive\_name
+       - def outputs\_mark! o, mark\_method, primitive\_name
+       - def outputs\_resolved? o
+       - def outputs\_resolve\_collection target
 
 #### ./dragon/array\_deprecated.rb
 
 - module ArrayDeprecated
    - def any\_intersects\_rect? *args
+
+#### ./dragon/controller/keys.rb
+
+- module GTK
+   - class Controller
+     - class Keys
+       - def activate key
+       - def deactivate key
+       - def clear
+       - def truthy\_keys
+
+#### ./dragon/controller/config.rb
+
+- module GTK
+   - class Controller
+     - class Config
+       - def initialize runtime
+       - def rawjoystick\_connected jid, joystickname, guid
+       - def rawjoystick\_disconnected jid
+       - def build\_binding\_string
+       - def move\_to\_different\_part part
+       - def previous\_part
+       - def next\_part
+       - def set\_binding bindstr
+       - def rawjoystick\_axis jid, axis, value
+       - def rawjoystick\_hat jid, hat, value
+       - def rawjoystick\_button jid, button, pressed
+       - def calc\_fading
+       - def render\_basics args, msg, fade=255
+       - def render\_part\_highlight args, part, alpha=255
+       - def choose\_target
+       - def render\_part\_highlight\_from\_bindstr args, bindstr, alpha=255
+       - def play\_around args
+       - def should\_tick?
+       - def tick args
 
 #### ./dragon/symbol.rb
 
@@ -776,26 +962,27 @@
 
 #### ./dragon/docs.rb
 
-- module GTK
-   - class Docs
-     - def map\_with\_ys
-     - def method\_missing m, *args
-
-#### ./dragon/runtime\_deprecated.rb
-
-- module GTK
-   - module RuntimeDeprecated
-     - def current\_framerate\_raw
-     - def suppress\_print\_help\_when\_mouse\_clicked
-     - def suppress\_framerate\_warning
-     - def suppress\_print\_help\_when\_mouse\_clicked= value
-     - def suppress\_framerate\_warning= value
-     - def on\_ticks
-     - def on\_tick *args
-     - def take\_screenshot= value
-     - def save\_state file\_name
-     - def load\_state file\_name
-     - def take\_screenshot
+- module DocsOrganizer
+   - def self.sort\_docs\_classes!
+   - def self.reserved\_methods
+   - def self.class\_sort\_order
+   - def self.check\_class\_sort\_order
+- module in its correct topological order.
+   - def self.sort\_method\_delegate l, r, method\_sort\_order
+   - def self.find\_methods\_with\_docs klass
+- module Docs
+   - def self.extended klass
+   - def docs\_method\_sort\_order
+   - def docs\_classes
+   - def docs\_all
+   - def docs
+   - def self.\_\_docs\_search\_\_ words = nil, &block
+   - def docs\_search words = nil, &block
+   - def \_\_export\_docs\_\_! opts = {}
+   - def export\_docs! opts = {}
+   - def \_\_docs\_append\_true\_line\_\_ true\_lines, true\_line, parse\_log
+   - def \_\_docs\_to\_html\_\_ string
+   - def \_\_docs\_line\_to\_html\_\_ line, parse\_log
 
 #### ./dragon/runtime.rb
 
@@ -806,7 +993,7 @@
      - def to\_s
 - module GTK
    - class Runtime
-     - def initialize platform, production, width, height, argv
+     - def initialize platform, production, logical\_width, logical\_height, argv
      - def schedule\_callback tick\_count, &callback
      - def cli\_arguments
      - def process\_argsv
@@ -851,7 +1038,6 @@
      - def raise\_conversion\_for\_rendering\_failed p, e, name = nil
      - def draw\_primitive p
      - def reset\_state
-     - def docs
      - def reset rng\_override = nil, seed: seed
      - def \_\_reset\_\_ rng\_override = nil, seed: seed
      - def paused?
@@ -888,7 +1074,7 @@
      - def tick\_core
      - def text\_font
      - def calcstringbox str, size\_enum = 0, font = "text.ttf"
-     - def help
+     - def autocomplete\_methods
      - def ignore\_search\_term? word
      - def grep\_did\_you\_mean\_recommendations instance, method
      - def grep\_did\_you\_mean instance, method
@@ -909,55 +1095,37 @@
      - def system cmd
      - def serialize\_state *opts
      - def deserialize\_state *args
+     - def self.argv\_window\_width argv
+     - def self.argv\_window\_height argv
+     - def self.argv\_window\_scale argv
+     - def self.argv\_window\_position\_x argv
+     - def self.argv\_window\_position\_y argv
+     - def self.parse\_cli\_argument\_i argv, name, default = 0
+     - def self.parse\_cli\_argument argv, name, default = nil
+     - def backup\_directory
+     - def create\_backup file
+     - def reset\_sprite path
+     - def show\_cursor
+     - def hide\_cursor
+     - def cursor\_shown?
+     - def current\_framerate
 
 #### ./dragon/assert.rb
 
 - module GTK
+- def test\_this\_works args, assert
+- class Assert
+   - def custom\_assertion actual, expected, message = nil
    - class Assert
      - def ok!
+- def test\_does\_this\_work args, assert
      - def true! value, message = nil
+- def test\_does\_this\_work args, assert
      - def false! value, message = nil
+- def test\_does\_this\_work args, assert
      - def equal! actual, expected, message = nil
+- def test\_does\_this\_work args, assert
      - def nil! value, message = nil
-
-#### ./dragon/runtime\_draw.rb
-
-- module GTK
-   - module RuntimeDraw
-     - def draw\_solid s
-     - def draw\_sprite s
-     - def draw\_screenshot s
-     - def draw\_label l
-     - def draw\_line l
-     - def draw\_border s
-     - def draw\_screenshots
-     - def should\_redraw?
-     - def draw\_clear r, g, b, a
-     - def primitives pass
-
-#### ./dragon/controller\_config.rb
-
-- module GTK
-   - class ControllerConfig
-     - def initialize runtime
-     - def rawjoystick\_connected jid, joystickname, guid
-     - def rawjoystick\_disconnected jid
-     - def build\_binding\_string
-     - def move\_to\_different\_part part
-     - def previous\_part
-     - def next\_part
-     - def set\_binding bindstr
-     - def rawjoystick\_axis jid, axis, value
-     - def rawjoystick\_hat jid, hat, value
-     - def rawjoystick\_button jid, button, pressed
-     - def calc\_fading
-     - def render\_basics args, msg, fade=255
-     - def render\_part\_highlight args, part, alpha=255
-     - def choose\_target
-     - def render\_part\_highlight\_from\_bindstr args, bindstr, alpha=255
-     - def play\_around args
-     - def should\_tick?
-     - def tick args
 
 #### ./dragon/attr\_gtk.rb
 
@@ -971,69 +1139,45 @@
    - def passes
    - def geometry
 
-#### ./dragon/runtime\_c\_bridge.rb
+#### ./dragon/console\_prompt.rb
 
 - module GTK
-   - module RuntimeCBridge
-     - def c\_bridge\_init \_\_sender
-     - def mark\_ruby\_file\_for\_reload path
-     - def reload\_history\_for path
-     - def get\_ruby\_reload\_list
-     - def reload\_complete
-     - def print\_help\_when\_mouse\_clicked
-     - def mouse\_move mousex, mousey, sender = false
-     - def update\_mouse\_buttons newbuttons
-     - def mouse\_button\_pressed button, sender = false
-     - def mouse\_pressed mousex, mousey, sender = false
-     - def mouse\_button\_up button, sender = false
-     - def mouse\_up mousex, mousey, sender = false
-     - def mouse\_wheel x, y, sender = false
-     - def textinput str
-     - def key\_down\_in\_game raw\_key, modifier
-     - def key\_up\_in\_game raw\_key, modifier, sender = false
-     - def key\_down\_raw raw\_key, modifier, sender = false
-     - def key\_up\_raw raw\_key, modifier, sender = false
-     - def button\_name\_given\_enum raw
-     - def set\_key raw\_key, playernum, event
-     - def key\_down\_player\_one raw\_key, sender = false
-     - def key\_down\_player\_two raw\_key, sender = false
-     - def key\_up\_player\_one raw\_key, sender = false
-     - def key\_up\_player\_two raw\_key, sender = false
-     - def key\_held\_player\_one raw\_key, sender = false
-     - def key\_held\_player\_two raw\_key, sender = false
-     - def window\_keyboard\_focus\_changed gained
-     - def window\_mouse\_focus\_changed gained
-     - def analog\_to\_perc value
-     - def left\_analog\_x\_player\_1 value, sender = false
-     - def left\_analog\_y\_player\_1 value, sender = false
-     - def right\_analog\_x\_player\_1 value, sender = false
-     - def right\_analog\_y\_player\_1 value, sender = false
-     - def left\_analog\_x\_player\_2 value, sender = false
-     - def left\_analog\_y\_player\_2 value, sender = false
-     - def right\_analog\_x\_player\_2 value, sender = false
-     - def right\_analog\_y\_player\_2 value, sender = false
-     - def background\_color
-     - def rawjoystick\_connected jid, joystickname, guid
-     - def rawjoystick\_disconnected jid
-     - def rawjoystick\_axis jid, axis, value
-     - def rawjoystick\_hat jid, hat, value
-     - def rawjoystick\_button jid, button, pressed
-     - def show\_cursor
-     - def hide\_cursor
-     - def cursor\_shown?
+   - class Console
+     - class Prompt
+       - def initialize(font\_style:, text\_color:, console\_text\_width:)
+       - def <<(str)
+       - def backspace
+       - def clear
+       - def autocomplete
+       - def pretty\_print\_strings\_as\_table items
+       - def pretty\_print\_row cells, string\_width, cell\_width, column\_width, columns
+       - def pretty\_print\_row\_seperator string\_width, cell\_width, column\_width, columns
+       - def render(args, x:, y:)
+       - def last\_period\_index
+       - def calc\_autocomplete\_prefix
+       - def current\_object
+       - def method\_candidates(prefix)
+       - def display\_autocomplete\_candidate(candidate)
+       - def reset\_autocomplete
 
-#### ./dragon/runtime\_framerate.rb
+#### ./dragon/outputs\_docs.rb
 
-- module GTK
-   - module RuntimeFramerate
-     - def framerate\_init
-     - def delta\_framerate
-     - def pin\_to\_30\_fps?
-     - def reset\_framerate\_calculation
-     - def current\_framerate
-     - def check\_framerate
-     - def framerate\_warning\_message
-     - def framerate\_below\_threshold?
+- module OutputsDocs
+   - def docs\_class
+   - def tick args
+   - def docs\_borders
+   - def tick args
+   - def tick args
+   - def docs\_solids
+   - def tick args
+   - def tick args
+   - def tick args
+   - class Solid
+     - def primitive\_marker
+   - class Square < Solid
+     - def initialize x, y, size
+   - def tick args
+- class GTK::Outputs
 
 #### ./dragon/easing.rb
 
@@ -1050,6 +1194,49 @@
      - def self.cube x
      - def self.quart x
      - def self.quint x
+
+#### ./dragon/readme\_docs.rb
+
+- module GTK
+   - module ReadMeDocs
+     - def docs\_method\_sort\_order
+     - def docs\_usage
+     - def docs\_hello\_world
+   - def tick args
+   - def tick args
+   - def tick args
+   - def tick args
+   - def tick args
+     - def docs\_deployment
+     - def docs\_dragonruby\_philosophy
+     - def docs\_ticks\_and\_frames
+   - def tick args
+   - def tick args
+     - def docs\_sprites
+   - def tick args
+   - def tick args
+   - def tick args
+   - class Sprite
+     - def primitive\_marker
+   - class BlueSquare < Sprite
+     - def initialize opts
+   - def tick args
+     - def docs\_labels
+   - def tick args
+   - def tick args
+   - def tick args
+   - def tick args
+   - def tick args
+     - def docs\_sounds
+   - def tick args
+   - def tick args
+   - def tick args
+     - def docs\_game\_state
+   - def tick args
+     - def animate\_a\_sprite
+   - def tick args
+     - def docs\_faq
+   - class ReadMe
 
 #### ./dragon/kernel.rb
 
@@ -1070,10 +1257,34 @@
        - def h\_half
        - def height\_half
 
+#### ./dragon/numeric\_docs.rb
+
+- module NumericDocs
+   - def docs\_frame\_index
+   - def tick args
+- class Numeric
+
+#### ./dragon/controller.rb
+
+- module GTK
+   - class Controller
+     - def initialize
+     - def serialize
+     - def clear
+     - def up
+     - def down
+     - def left
+     - def right
+     - def activate\_down(key)
+     - def activate\_held(key)
+     - def activate\_up(key)
+
 #### ./dragon/object.rb
 
 - class BareDefinitionsContainer
 - class NIL
+- class Class
+   - def serialize
 - class ObjectMetadata
    - def self.with\_meta o, meta\_value
    - def self.meta o
@@ -1086,6 +1297,7 @@
    - def self.new *args
    - def self.gtk\_args
    - def self.attr\_sprite
+   - def self.attr\_rect
    - def self.attr\_gtk
    - def purge\_class symbol
    - def raise\_immediately e, m, *args
@@ -1109,6 +1321,7 @@
    - def i\_or\_default default = 0
    - def require file
    - def \_\_custom\_object\_methods\_\_
+   - def autocomplete\_methods
    - def \_\_object\_methods\_\_
    - def help
    - def to\_s
@@ -1125,6 +1338,13 @@
    - def let
    - def greeting
    - def greeting
+   - def \_\_help\_contract\_implementation contract\_methods
+   - def docs
+   - module PersonDocs
+     - def docs\_class
+     - def docs\_say\_hello
+   - class Person
+     - def say\_hello
 
 #### ./dragon/directional\_input\_helper\_methods.rb
 
@@ -1232,8 +1452,7 @@
      - def set! key, value
      - def clear!
 
-#### ./dragon/top\_level.rb
-
+#### ./dragon/top\_level.rb 
 
 #### ./dragon/strict\_entity.rb
 
@@ -1255,30 +1474,22 @@
      - def []= key, value
      - def [] key
 
-#### ./dragon/runtime\_hotload.rb
-
-- module GTK
-   - module RuntimeHotload
-     - def hotload\_init
-     - def hotload\_on\_write\_file file\_name
-     - def files\_to\_reload
-     - def core\_files\_to\_reload
-     - def init\_mtimes file
-     - def backup\_directory
-     - def create\_backup file
-     - def reload\_ruby\_file file
-     - def hotload\_source\_files
-     - def check\_mailbox
-     - def hotload\_if\_needed
-     - def on\_load\_succeeded file
-     - def reload\_if\_needed file, force = false
-     - def reset\_sprite path
-
 #### ./dragon/serialize.rb
 
-- module Serialize
-   - def serialize
-   - def inspect
+- module GTK
+   - module Serialize
+     - def serialize
+     - def inspect
+
+#### ./dragon/console\_font\_style.rb
+
+- module GTK
+   - class Console
+     - class FontStyle
+       - def initialize(font:, size\_enum:, line\_height:)
+       - def letter\_size
+       - def line\_height\_px
+       - def label(x:, y:, text:, color:, alignment\_enum: 0)
 
 #### ./dragon/console.rb
 
@@ -1318,10 +1529,12 @@
      - def inputs\_scroll\_down\_half? args
      - def inputs\_clear\_command? args
      - def scroll\_down\_half
+     - def mouse\_wheel\_scroll args
      - def process\_inputs args
-     - def write\_primitive\_and\_return\_offset args, left, y, str, errorinfo, headerinfo, txtinfo, line\_height
-     - def write\_line args, left, y, str, errorinfo, headerinfo, txtinfo
+     - def write\_primitive\_and\_return\_offset(args, left, y, str, archived: false)
+     - def write\_line(args, left, y, str, archived: false)
      - def render args
+     - def render\_help args, top
      - def render\_log\_offset args
      - def include\_error\_marker? text
      - def error\_markers
@@ -1331,9 +1544,25 @@
      - def calc args
      - def tick args
      - def set\_command\_with\_history\_silent command, histories, show\_reason = nil
+     - def defaults\_set\_command\_extended
+     - def set\_command\_extended opts
      - def set\_command\_with\_history command, histories, show\_reason = nil
      - def set\_command command, show\_reason = nil
      - def set\_command\_silent command, show\_reason = nil
+     - def set\_system\_command command, show\_reason = nil
+     - def system\_command
+     - def w
+     - def h
+     - def line\_height\_px
+     - def lines\_on\_one\_page
+     - def line(y:, color:)
+     - def include\_row\_marker? log\_entry
+     - def include\_header\_marker? log\_entry
+     - def color\_for\_log\_entry(log\_entry)
+     - def prompt
+     - def current\_input\_str
+     - def current\_input\_str=(str)
+     - def clear
 
 #### ./dragon/trace.rb
 
@@ -1355,8 +1584,8 @@
      - def initialize ffi\_draw
      - def transform\_x x
      - def untransform\_x x
-     - def untransform\_y y
      - def transform\_y y
+     - def untransform\_y y
      - def ffi\_draw
      - def ffi\_draw= value
      - def origin\_bottom\_left!
