@@ -1,8 +1,7 @@
 
-### DragonRuby GTK ctags (emacs) extraction 2020-07-26 12:00
+### DragonRuby GTK ctags (emacs) extracted 2020-08-14 (v52/1.16)
 
-#### Select sources are also available on [GitHub](https://github.com/DragonRuby/dragonruby-game-toolkit-contrib/tree/master/dragon)  
-
+#### Select sources are also available on [GitHub](https://github.com/DragonRuby/dragonruby-game-toolkit-contrib/tree/master/dragon)
 ----
 
 
@@ -77,15 +76,14 @@
      - def clear
      - def inspect
      - def serialize
+     - def [] value
 
-#### ./dragon/openentity\_docs.rb
+#### ./dragon/open\_entity\_docs.rb
 
 - module OpenEntityDocs
    - def docs\_class
    - def tick args
-   - def tick args
    - def docs\_as\_hash
-   - def tick args
 - class GTK::OpenEntity
 
 #### ./dragon/string.rb
@@ -124,9 +122,9 @@
      - def self.sprite\_contract
      - def self.code\_for\_class\_attributes\_as\_hash klass
      - def self.serialization\_implementation\_help klass
-     - def serialize
-     - def inspect
-     - def to\_s
+   - def serialize
+   - def inspect
+   - def to\_s
      - def self.serialization\_too\_large
 
 #### ./dragon/console\_color.rb
@@ -150,16 +148,15 @@
    - def docs\_product
    - def docs\_map\_2d
    - def docs\_any\_intersect\_rect?
-   - class Player
+     - class Player
        - def initialize x, y, w, h
        - def serialize
        - def inspect
        - def to\_s
    - def docs\_map
-   - def tick args
    - def docs\_each
    - def tick args
-   - class Array
+- class Array
 
 #### ./dragon/array.rb
 
@@ -177,6 +174,7 @@
    - def << other
    - def + other
    - def include\_any? *items
+   - def map\_with\_index *opts, &block
 
 #### ./dragon/attr\_sprite.rb
 
@@ -207,7 +205,7 @@
      - def log\_inconclusive m
      - def log\_passed m
      - def log\_no\_tests\_found
-     - def test\_game\_over args, assert
+- def test\_game\_over args, assert
      - def log\_test\_running m
      - def test\_signature\_invalid\_exception? e, m
      - def log\_test\_signature\_incorrect m
@@ -226,6 +224,9 @@
      - def angle\_to other\_point
      - def angle\_from other\_point
      - def point\_inside\_circle? circle\_center\_point, radius
+     - def center\_inside\_rect other\_rect
+     - def center\_inside\_rect\_y other\_rect
+     - def center\_inside\_rect\_x other\_rect
      - def anchor\_rect anchor\_x, anchor\_y
      - def angle\_given\_point other\_point
      - def self.shift\_line line, x, y
@@ -261,8 +262,9 @@
    - def elapsed\_time tick\_count\_override = nil
    - def elapsed\_time\_percent duration
    - def new?
-   - def elapsed? offset, tick\_count\_override = nil
+   - def elapsed? offset = 0, tick\_count\_override = Kernel.tick\_count
    - def frame\_index *opts
+   - def zero?
    - def zero
    - def one
    - def two
@@ -345,7 +347,7 @@
 - class Integer
    - def round *args
 
-#### ./dragon/nil\_class_false\_class.rb
+#### ./dragon/nil\_class\_false\_class.rb
 
 - module NilClassFalseClass
    - def feels\_like\_an\_array? name
@@ -399,6 +401,8 @@
      - def serialize
      - def destructure
      - def clear\_render\_targets
+     - def render\_targets\_clear
+     - def render\_targets
      - def render\_target name
      - def solids
      - def static\_solids
@@ -463,7 +467,6 @@
        - def left\_analog\_y\_player\_2 value, sender = false
        - def right\_analog\_x\_player\_2 value, sender = false
        - def right\_analog\_y\_player\_2 value, sender = false
-       - def background\_color
        - def rawjoystick\_connected jid, joystickname, guid
        - def rawjoystick\_disconnected jid
        - def rawjoystick\_axis jid, axis, value
@@ -482,7 +485,6 @@
        - def draw\_line l
        - def draw\_border s
        - def draw\_screenshots
-       - def draw\_clear r, g, b, a
        - def primitives pass
 
 #### ./dragon/runtime/hotload.rb
@@ -529,7 +531,6 @@
        - def take\_screenshot= value
        - def save\_state file\_name
        - def load\_state file\_name
-       - def take\_screenshot
 
 #### ./dragon/hash.rb
 
@@ -967,7 +968,7 @@
    - def self.reserved\_methods
    - def self.class\_sort\_order
    - def self.check\_class\_sort\_order
-- module in its correct topological order.
+- module in it's correct topilogical order.
    - def self.sort\_method\_delegate l, r, method\_sort\_order
    - def self.find\_methods\_with\_docs klass
 - module Docs
@@ -1035,6 +1036,7 @@
      - def target pass
      - def render\_width pass
      - def render\_height pass
+     - def render\_transient pass
      - def raise\_conversion\_for\_rendering\_failed p, e, name = nil
      - def draw\_primitive p
      - def reset\_state
@@ -1057,7 +1059,6 @@
      - def clear\_draw\_passes
      - def clear\_inputs
      - def tick\_console
-     - def delta\_tick
      - def quit\_after\_startup\_eval?
      - def print\_console\_activation\_help
      - def tick\_runtime
@@ -1085,10 +1086,6 @@
      - def log\_levels
      - def log\_level= value
      - def seed
-     - def delta\_time\_enabled?
-     - def set\_delta\_time accumulator
-     - def delta\_time= value
-     - def delta\_time
      - def slowmo! factor
      - def notify\_subdued!
      - def notify! message, duration = 300
@@ -1109,6 +1106,7 @@
      - def hide\_cursor
      - def cursor\_shown?
      - def current\_framerate
+     - def take\_screenshot
 
 #### ./dragon/assert.rb
 
@@ -1164,14 +1162,8 @@
 
 - module OutputsDocs
    - def docs\_class
-   - def tick args
    - def docs\_borders
-   - def tick args
-   - def tick args
    - def docs\_solids
-   - def tick args
-   - def tick args
-   - def tick args
    - class Solid
      - def primitive\_marker
    - class Square < Solid
@@ -1202,39 +1194,21 @@
      - def docs\_method\_sort\_order
      - def docs\_usage
      - def docs\_hello\_world
-   - def tick args
-   - def tick args
-   - def tick args
-   - def tick args
-   - def tick args
+     - def tick args
      - def docs\_deployment
      - def docs\_dragonruby\_philosophy
      - def docs\_ticks\_and\_frames
-   - def tick args
-   - def tick args
      - def docs\_sprites
-   - def tick args
-   - def tick args
-   - def tick args
+     - def tick args
    - class Sprite
      - def primitive\_marker
    - class BlueSquare < Sprite
      - def initialize opts
-   - def tick args
+     - def tick args
      - def docs\_labels
-   - def tick args
-   - def tick args
-   - def tick args
-   - def tick args
-   - def tick args
      - def docs\_sounds
-   - def tick args
-   - def tick args
-   - def tick args
      - def docs\_game\_state
-   - def tick args
      - def animate\_a\_sprite
-   - def tick args
      - def docs\_faq
    - class ReadMe
 
@@ -1257,10 +1231,21 @@
        - def h\_half
        - def height\_half
 
+#### ./dragon/mouse\_docs.rb
+
+- module MouseDocs
+   - def docs\_class
+   - def tick args
+- class GTK::Mouse
+
 #### ./dragon/numeric\_docs.rb
 
 - module NumericDocs
+   - def docs\_method\_sort\_order
    - def docs\_frame\_index
+   - def docs\_new?
+   - def docs\_elapsed?
+   - def docs\_elapsed\_time
    - def tick args
 - class Numeric
 
@@ -1314,6 +1299,9 @@
    - def better\_instance\_information
    - def better\_class\_hierarchy\_information
    - def raise\_method\_missing\_better\_error name, *args, &block
+   - def \_\_looks\_like\_docs\_\_? name, *args, &block
+   - def \_\_normalized\_docs\_method\_\_ name, *args, &block
+   - def \_\_try\_invoke\_docs\_method\_\_ name, *args, &block
    - def method\_missing name, *args, &block
    - def numeric\_or\_default default = 0
    - def f\_or\_default default = 0
@@ -1452,7 +1440,8 @@
      - def set! key, value
      - def clear!
 
-#### ./dragon/top\_level.rb 
+#### ./dragon/top\_level.rb
+
 
 #### ./dragon/strict\_entity.rb
 
