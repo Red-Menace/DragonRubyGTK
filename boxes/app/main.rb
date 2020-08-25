@@ -1,7 +1,6 @@
 
 #
 #  An example demonstrating the Color class.
-#  Built with the v38 release. 
 #
 #  Initial color display is from the HTML set
 #
@@ -57,7 +56,27 @@ class Sample
                           y: 40,
                           text: "Press space to continue, or wait #{($starting / 60).round} seconds ...",
                           font: 'fonts/Arial Rounded Bold.ttf' }
-      $starting -= 1
+      outputs.labels << { x: 1015,
+                          y: 105,
+                          size_enum: -4,
+                          text: 'Arrow keys = speed up, down, stop, full',
+                          font: 'fonts/Arial Rounded Bold.ttf' }
+      outputs.labels << { x: 1015,
+                          y: 90,
+                          size_enum: -4,
+                          text: 'Space = randomize boxes',
+                          font: 'fonts/Arial Rounded Bold.ttf' }
+      outputs.labels << { x: 1015,
+                          y: 75,
+                          size_enum: -4,
+                          text: 'Return = this color display',
+                          font: 'fonts/Arial Rounded Bold.ttf' }
+      outputs.labels << { x: 1015,
+                          y: 60,
+                          size_enum: -4,
+                          text: 'q = quit',
+                          font: 'fonts/Arial Rounded Bold.ttf' }
+     $starting -= 1
    end
       
 end
@@ -78,11 +97,11 @@ class Boxes
    def main  # draw random rectangles of random colors at randon locations (randomly)
       outputs.labels << { x: 0,
                           y: 20,
-                          text: "#{$increment}", 
+                          text: "New boxes: #{$increment}/250,  framerate: #{$gtk.current_framerate.to_i}", 
                           font: 'fonts/Arial Rounded Bold.ttf' }
-      state.boxes ||= 250.map { rectangle }
+      state.boxes ||= 250.map { rectangle }  # keep track of 250 boxes
       outputs.solids << state.boxes
-      state.boxes.slice!(0, $increment)  # cycle in a few new rectangles
+      state.boxes.slice!(0, $increment)  # cycle in a few new ones
       state.boxes += $increment.map { rectangle }
    end
       
@@ -119,7 +138,7 @@ def do_key_press(keyboard)  # handle key presses (modifier keys are ignored)
 end
 
 
-def setup  # initial setup
+def setup
    $full_set = Colors.merged_set  # all the colors
 
    $starting = 60 * 30  # timeout
