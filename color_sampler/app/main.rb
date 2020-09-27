@@ -98,7 +98,7 @@ def do_mouse(args)
    index = (x - offset).idiv width
    key = args.state.set.keys[index + 2]  # the key/color name
    if !key.nil? && x >= offset && y >= 220 && y <= 580  # only the color set
-      name_text = "The color at the mouse is '#{key}'"
+      name_text = "The color at the mouse pointer is \"#{key}\""
       name_text += " - rgb#{Colors.new(key, args.state.set).tint(args.state.tint)} (tint = #{args.state.tint})"  # RGB with any tint
       args.outputs.labels << [20, 130, name_text, 2, 0, 255, 255, 255]
    end
@@ -147,7 +147,7 @@ def tick(args)
    
    # bottom half with color set label and options
    args.outputs.solids << [0, 0, 1280, 400, 0, 0, 0]
-   args.state.text = "Color set is '#{args.state.color_set}', with #{args.state.number} colors."
+   args.state.text = "The name of this color set is '#{args.state.color_set}', it has #{args.state.number} colors."
    args.outputs.labels << [20, 160, args.state.text, 2, 0, 255, 255, 255]
    args.outputs.labels << [20, 40, "tint[-|0|+], rainbow(1)(2)(r), (b)asics, (c)rayon, (g)rays, (h)tml, (R)GBby64, (x)kcd, (q)uit", 2, 0, 255, 255, 255]
    
