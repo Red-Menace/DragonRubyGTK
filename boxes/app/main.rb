@@ -2,11 +2,11 @@
 #
 #  An example demonstrating the Color class.
 #
-#  Initial color display is from the HTML set
+#  The initial color display is from the HTML set.
 #
-#  250 rectangles are drawn each tick
-#      random size, location, color, and opacity
-#  0 - 100 new rectangles are cycled in each tick
+#  250 (default) rectangles are drawn each tick
+#  with random size, location, color, and opacity.
+#  0 - 100 new rectangles are cycled in each tick.
 #
 
 
@@ -22,7 +22,7 @@ class Sample
    attr_accessor :outputs
 
 
-   def show  # show color sets with swatches and names
+   def show  # show the color set with swatches and names
       top, left = 690, 15
       outputs.labels << { x: left,
                           y: top + 15,
@@ -95,11 +95,13 @@ class Boxes
 
 
    def main  # draw random rectangles of random colors at randon locations (randomly)
+      new_boxes = "#{$increment} new boxes in #{QUANTITY} per tick,"
+      framerate = "framerate: #{$gtk.current_framerate.to_i}"
       outputs.labels << { x: 0,
                           y: 20,
-                          text: "New boxes: #{$increment}/250,  framerate: #{$gtk.current_framerate.to_i}", 
+                          text: " #{new_boxes}  #{framerate}", 
                           font: 'fonts/Arial Rounded Bold.ttf' }
-      state.boxes ||= 250.map { rectangle }  # keep track of 250 boxes
+      state.boxes ||= QUANTITY.map { rectangle }  # keep track of the boxes
       outputs.solids << state.boxes
       state.boxes.slice!(0, $increment)  # cycle in a few new ones
       state.boxes += $increment.map { rectangle }
@@ -111,6 +113,10 @@ end
 def change_speed(speed)  # shift in more or less rectanges at a time
    curve = [0, 1, 2, 4, 9, 16, 25, 36, 49, 64, 100]  # speed curve (per tick)
    $increment = curve[speed]
+   if $increment > QUANTITY  # speed limit
+      $speed = (curve.select { |i| i <= QUANTITY }).count - 1
+      $increment = curve[$speed]
+   end
 end
 
 
@@ -139,13 +145,15 @@ end
 
 
 def setup
-   $full_set = Colors.merged_set  # all the colors
+   $full_set = Colors.color_set('Merged Set')  # all the colors
 
+   QUANTITY = 250  # number of boxes per tick (try to keep under 1500 or so)
    $starting = 60 * 30  # timeout
    change_speed($speed = 4)
 
    $samples = Sample.new
    $example = Boxes.new
+   
 end
 
 
