@@ -84,7 +84,7 @@ def do_tint(args)
    else
       return
    end
-   args.state.tint = args.state.tint.clamp(0, 255)
+   args.state.tint = args.state.tint.clamp(-255, 255)
    args.inputs.keyboard.truthy_keys.clear
    args.state.new_sample = true
 end
