@@ -12,3 +12,7 @@ Some stuff for the Game ToolKit:
 
 - **Deflection** - a small puzzle game where you change the course of the ball by placing deflectors in its path, in order to hit all target squares. [v64/1.27]
 
+- **Sounds** - sound effects, beep and click sounds, etc
+
+- **Fonts** - a collection of smaller (file size) fonts
+
