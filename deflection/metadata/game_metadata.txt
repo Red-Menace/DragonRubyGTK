@@ -1,0 +1,6 @@
+devid=Red_Menace
+devtitle=Red_Menace
+gameid=Deflection
+gametitle=Deflection
+version=1.0
+icon=metadata/Made_with_DR.png
