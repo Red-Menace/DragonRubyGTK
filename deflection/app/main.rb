@@ -182,10 +182,9 @@ def instructions
    labels, offset = [], 340
    labels << [$menu_edge + 20, offset -= 15, 'Hit all targets with the ball', -3, 0, *WHITE]
    labels << [$menu_edge + 20, offset -= 15, 'by placing deflectors in its', -3, 0, *WHITE]
-   labels << [$menu_edge + 20, offset -= 15, 'path to change direction.', -3, 0, *WHITE]
+   labels << [$menu_edge + 20, offset -= 15, $cheat ? 'path.' : 'path to progress.', -3, 0, *WHITE]
    labels << [$menu_edge + 20, offset - 15, "* 'no hits' counter disabled", -3, 0, *WHITE] if $cheat
-   
-   offset = offset -= 15  # y offset of dynamic game mode text
+   offset = offset -= 15  # advance line regardless of that last one
    choices = $mode_choices[0]
    choices = ['edges', 'timed'] if choices == 'combo1' 
    choices = ['hits', 'timed'] if choices == 'combo2'
@@ -323,6 +322,7 @@ def game_over?
       common_label(690, 'Fell off the edge', 'oh_no')
    elsif $target_list.count.zero?
       common_label(600, 'All targets hit!', 'flourish', WHITE)
+      return true if $cheat  # don't progress
       progress
       restart(11)
    elsif !$cheat && $consecutive >= ($board.width * 3).to_i
