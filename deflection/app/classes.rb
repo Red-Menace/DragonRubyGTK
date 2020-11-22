@@ -34,7 +34,7 @@ class Board
    def initialize
       @width = 1040.idiv($board_size)  # space for menu and scoreboard
       @height = 720.idiv($board_size)
-      $gtk.args.outputs.static_solids << create_grid
+      $args.outputs.static_solids << create_grid
    end
    
    # Create a 2-dimensional grid of squares with default data.
@@ -120,7 +120,9 @@ class Player
       offset = ($board_size - @scale).idiv(2) - 2  # border space is 2
       @x, @y = info[:x] + offset, info[:y] + offset  # location from board square
       @direction = direction
-      @fall = ($game_mode == :simple || $game_mode == :timed) ? nil : false
+      
+      @fall = ($game_mode == :edges) || ($game_mode == :combo1) ? false : nil
+      
       @color = WHITE
       @path = 'sprites/white_circle.png'
    end
