@@ -446,6 +446,10 @@ def progress
          $size_choices.rotate!(1)  # cycle grid size
       end
    end
+   $game_mode = $mode_choices[0].to_sym
+   $board_size = $size_choices[0]
+   $player_speed = $speed_choices[0]
+   $targets = $target_choices[0]
 end
 
 # Slowly shift the menu background tint.
