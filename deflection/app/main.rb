@@ -220,7 +220,7 @@ def menu_texts
    [mode, grid, speed, $target_choices[0].to_s]
 end
 
-# Show the game menu (right side of board/screen) - [C] to disable square count is hidden.
+# Show the game menu (right side of board/screen).  [C] to disable square count is hidden.
 def show_menu
    tint_background
    instructions
@@ -327,13 +327,12 @@ def game_over?
       progress
       restart(11)
    elsif !$cheat && $consecutive >= ($board.width * 4).to_i
-      common_label(690, "No hits in #{$consecutive} squares", 'uh_oh')
+      common_label(690, "No hits in #{$consecutive} squares", 'uh_oh')  # 'beep4'
    elsif !$game_running
       common_label(690, 'Game stopped', nil, WHITE)
    else
       return false
    end
-   $game_running = false  # for previous matches
    true
 end
 
@@ -462,7 +461,7 @@ def tint_background
       $color_shift[element] = (rand < 0.5 ? color + 2 : color - 2).clamp(128, 255)
    end
    $args.outputs.primitives << [$menu_edge, 0, 1280 - $menu_edge, 719,
-                                    'sprites/background.png',
-                                    0, 255, *$color_shift].sprites
+                                'sprites/background.png',
+                                0, 255, *$color_shift].sprites
 end
 
