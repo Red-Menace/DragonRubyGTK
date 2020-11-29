@@ -29,8 +29,9 @@
 #     Countdown time is scaled from the grid size and player speed, and probably
 #     needs to be (re)adjusted for the number of targets and game mode.
 #
-# You lose (settings stay the same) if the chosen difficulties are triggered, or if
-# the ball has traveled the equivalent of 3 board widths without hitting a target.
+# You lose (and settings stay the same) if the chosen difficulties are triggered, or
+# if the ball has traveled the equivalent of 4 board widths without hitting a target
+# (the targets remaining counter will turn red if targets are not being hit). 
 #
 
 require 'app/classes.rb'
@@ -72,8 +73,8 @@ def set_up_setup
    # other
    $color_shift = [128, 128, 128]   # background tint
    $tone_index = 5                  # initial index into the tone scale
-   $consecutive = 0                 # consecutive squares without action...
-   $cheat = false                   # ...unless this mode is enabled?!
+   $consecutive = 0                 # consecutive squares without a target hit...
+   $cheat = false                   # ...unless this mode is enabled ?!
    
    # initial setup
    create_board
@@ -219,7 +220,7 @@ def menu_texts
    [mode, grid, speed, $target_choices[0].to_s]
 end
 
-# Show the game menu (right side of board/screen).
+# Show the game menu (right side of board/screen) - [C] to disable square count is hidden.
 def show_menu
    tint_background
    instructions
@@ -238,7 +239,7 @@ def show_menu
    labels << [$menu_edge + 25, 100, 'or arrow', 0, 0, *WHITE]
    $args.outputs.labels << labels
    $args.outputs.primitives << [$menu_edge + 170, 140, 40, 40, 'sprites/menu_backslash.png'].sprite
-   $args.outputs.primitives << [$menu_edge + 170, 80, 40, 40, 'sprites/menu_slash.png'].sprites
+   $args.outputs.primitives << [$menu_edge + 170, 80, 40, 40, 'sprites/menu_slash.png'].sprite
 end
 
 
@@ -260,7 +261,7 @@ def do_keyboard(inputs)
       $targets = $target_choices[0]
       restart
    elsif keys.include?(:f) then $game_running = false  # forfeit/stop current game
-   elsif keys.include?(:c) then $cheat = !$cheat  # ?!
+   elsif keys.include?(:c) then $cheat = !$cheat  # toggle consecutive square count
    elsif keys.include?(:q) then exit  # quit
    end
 end
@@ -325,13 +326,14 @@ def game_over?
       return true if $cheat  # don't progress
       progress
       restart(11)
-   elsif !$cheat && $consecutive >= ($board.width * 3).to_i
-      common_label(690, "No hits in #{$consecutive} squares", 'buzzer')
+   elsif !$cheat && $consecutive >= ($board.width * 4).to_i
+      common_label(690, "No hits in #{$consecutive} squares", 'uh_oh')
    elsif !$game_running
       common_label(690, 'Game stopped', nil, WHITE)
    else
       return false
    end
+   $game_running = false  # for previous matches
    true
 end
 
@@ -406,7 +408,8 @@ def tick(args)
       perform_action
       args.outputs.sprites << $player.values
       args.outputs.labels << [center, 690, 'GO!', 2, 1, *WHITE]
-      args.outputs.labels << [center, 600, "Targets: #{$target_list.count}", 2, 1, *WHITE]
+      color = !$cheat && $consecutive >= ($board.width * 3).to_i ? RED : WHITE
+      args.outputs.labels << [center, 600, "Targets: #{$target_list.count}", 2, 1, *color]
       args.outputs.labels << [center, 40, "Framerate: #{format('%.2f', args.gtk.current_framerate)}", 0, 1, *WHITE]
    end
 end
