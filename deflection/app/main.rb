@@ -12,6 +12,10 @@
 #
 # You win and progress when all targets are hit (the square will change color).
 #
+# You lose (and settings stay the same) if the chosen difficulties are triggered, or
+# if the ball has traveled the equivalent of 4 board widths without hitting a target
+# (the targets remaining counter will turn red if targets are not being hit). 
+#
 # Difficulty is by game mode, grid size (which is also used in determining the number
 # of targets), player speed, and time:
 #     Game modes are:
@@ -27,11 +31,7 @@
 #     Targets are some (height), more ((width+height)/2), and lots (width).
 #
 #     Countdown time is scaled from the grid size and player speed, and probably
-#     needs to be (re)adjusted for the number of targets and game mode.
-#
-# You lose (and settings stay the same) if the chosen difficulties are triggered, or
-# if the ball has traveled the equivalent of 4 board widths without hitting a target
-# (the targets remaining counter will turn red if targets are not being hit). 
+#     needs some tweaking for the number of targets and game mode.
 #
 
 require 'app/classes.rb'
@@ -43,10 +43,10 @@ require 'app/classes.rb'
 # Globals and initial settings.
 def set_up_setup
    # general settings
-   $game_mode = :normal       # game mode (normal, timed, edges, combo1, hits, combo2)
+   $game_mode = :normal       # game mode
    $board_size = 80           # board square size (pixels)
    $player_speed = 3          # movement increment (pixels)
-   $targets = :some           # :some, :more, :lots
+   $targets = :some           # number of targets
    $start_delay = 6           # initial start delay/countdown (seconds)
    $countdown = 45            # timed game countdown (seconds)
    $time_warning = 9          # countdown time warning (25% left)
@@ -154,6 +154,24 @@ def create_player
    $current_square = [x.clamp(0, $board.width - 1), y.clamp(0, $board.height - 1)]  # the entry square
 end
 
+# Store game state.
+def save_game
+   # get $game_mode
+   # get $board_size
+   # get $player_speed
+   # get $targets
+   # save to file
+end
+
+# Restore game state.
+def load_game
+   # read from file
+   # get $game_mode and rotate $mode_choices until [0] matches
+   # get $board_size and rotate $size_choices until [0] matches
+   # get $player_speed and rotate $speed_choices until [0] matches
+   # get $targets and rotate $target_choices until [0] matches
+end
+
 # Hint where the player will enter the field with a countdown label.
 # Returns the countdown time.
 def game_starting?
@@ -198,7 +216,7 @@ def instructions
          labels << [$menu_edge + 20, offset -= 15, "+ don't fall off the edges", -3, 0, *WHITE]
       when 'hits'
          labels << [$menu_edge + 20, offset -= 15, "+ don't run into previously", -3, 0, *WHITE]
-         labels << [$menu_edge + 20, offset -= 15, '   hit targets', -3, 0, *WHITE]
+         labels << [$menu_edge + 20, offset -= 15, '    hit targets', -3, 0, *WHITE]
       end
    end
    $args.outputs.labels << labels
@@ -310,7 +328,7 @@ def game_over?
    x, y = $current_square
    color = ($game_mode == :timed || $game_mode == :combo1) &&
            $countdown <= $time_warning ? RED : WHITE
-   time = $game_mode == :timed || $game_mode == :combo1 ? $countdown : $elapsed_time
+   time = ($game_mode == :timed || $game_mode == :combo1) ? $countdown : $elapsed_time
    center = 1280 - (1280 - $menu_edge).idiv(2)
    $args.outputs.labels << [center, 645, "Time: #{format_time(time)}", 2, 1, *color]
    if $elapsed_time > 1800 ||
@@ -323,7 +341,7 @@ def game_over?
       common_label(690, 'Fell off the edge', 'oh_no')
    elsif $target_list.count.zero?
       common_label(600, 'All targets hit!', 'flourish', WHITE)
-      return true if $cheat  # don't progress
+      return true if $cheat  # don't progress if cheating
       progress
       restart(11)
    elsif !$cheat && $consecutive >= ($board.width * 4).to_i
@@ -351,7 +369,7 @@ def perform_action
       $board.grid[x][y].merge!({ r: 0, g: 255, b: 0, piece: :hitting })
       remove_item(x, y, $target_list)
       $args.outputs.sounds << 'sounds/tink.wav'  # 'sounds/click.wav'
-      $consecutive = 0
+      $consecutive = 0  # reset counter
    when :empty
       $in_progress = false  # reset when no action to perform
    when :slash then deflect(:slash)
