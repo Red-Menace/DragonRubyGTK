@@ -2,8 +2,6 @@
 
 Some stuff for the Game ToolKit:
 
-- **Fonts** - a collection of smaller (file size) fonts
-
 - **Icons** - some image files for project folder and application icons.
 
 - **Sounds** - sound effects, beep and click sounds, etc
