@@ -52,7 +52,7 @@
 #
 #  Instance methods:
 #     c.set_color(color = 'gray', set = 'Basics', transparency = nil)
-#     c.alpha=(transparency)
+#     c.set_alpha(transparency)
 #     c.to_h
 #     c.opposite
 #     c.opposite!
@@ -62,16 +62,21 @@
 #     c.lshift!
 #     c.rshift
 #     c.rshift!
+#     c.set_rotation(degrees = 0)
+#     c.rotate
+#     c.rotate!
 #     c.tint(amount = 0.0)
 #     c.tint!(amount = 0.0)
 #
 #  Instance variables:
-#     @set   - the color set name, or the default if not found
-#     @name  - the color or index name, or 'unknown' if it doesn't exist
-#     @rgb   - an array of [red, green, blue] components (0 - 255)
-#     @alpha - the transparency (0 - 255)
-#     @rgba  - an array of [red, green, blue, alpha] components
-#     @hex   - the hexadecimal equivalent for the rgb array (0080FF, etc)
+#     @set     - the color set name, or the default if not found
+#     @name    - the color or index name, or 'unknown' if it doesn't exist
+#     @rgb     - an array of [red, green, blue] components (0 - 255)
+#     @alpha   - the transparency (0 - 255)
+#     @rgba    - an array of [red, green, blue, alpha] components
+#     @hex     - the hexadecimal equivalent for the rgb array (0080FF, etc)
+#
+#     @matrix  - color (hue) rotation matrix
 #
 #
 
@@ -274,6 +279,7 @@ class Colors
    def initialize(color_name = 'gray', set = 'Basics', transparency = 255)
    # Set up a new color object with the specified name, color set, and transparency.
    # Using nil or the default for the transparency sets it to 255 (opaque).
+      @matrix = [[1,0,0], [0,1,0], [0,0,1]]
       transparency = 255 if transparency.nil?
       set_color(color_name, set, transparency)  # continue setup
    end
@@ -304,7 +310,7 @@ class Colors
    end
 
 
-   def alpha=(transparency)
+   def set_alpha(transparency)
    # Set the color's transparency from an integer (0 - 255) or percentage (0.0 - 1.0).
    # Returns the alpha value (0 - 255).
       @alpha = transparency
@@ -327,7 +333,7 @@ class Colors
       [ 255 - @rgb[0], 255 - @rgb[1], 255 - @rgb[2] ]
    end
    
-   def oposite!
+   def opposite!
    # Same as opposite, but changes and returns the new color.
       @rgb = opposite
       @name = 'unknown'
@@ -377,7 +383,44 @@ class Colors
       update
    end
 
-
+   
+   def set_rotation(degrees = 0)
+   # Set the hue rotation matrix.
+   # Computation can get expensive, so the matrix is only calculated as needed.
+      radians = degrees / 180.0 * Math::PI
+      sine = sin(radians)
+      cosine = cos(radians)
+      shift = 1.0 / 3.0
+      root = sqrt(shift)
+      @matrix[0][0] = cosine + (1.0 - cosine) / 3.0
+      @matrix[0][1] = shift * (1.0 - cosine) - root * sine
+      @matrix[0][2] = shift * (1.0 - cosine) + root * sine
+      @matrix[1][0] = shift * (1.0 - cosine) + root * sine
+      @matrix[1][1] = cosine + shift * (1.0 - cosine)
+      @matrix[1][2] = shift * (1.0 - cosine) - root * sine
+      @matrix[2][0] = shift * (1.0 - cosine) - root * sine
+      @matrix[2][1] = shift * (1.0 - cosine) + root * sine
+      @matrix[2][2] = cosine + shift * (1.0 - cosine)
+   end
+   
+   def rotate
+   # Rotate RGB color using the current matrix.
+   # Returns an [r, g, b] array.
+      r, g, b = @rgb
+      r_rot = r * @matrix[0][0] + g * @matrix[0][1] + b * @matrix[0][2] + 0.5
+      g_rot = r * @matrix[1][0] + g * @matrix[1][1] + b * @matrix[1][2] + 0.5
+      b_rot = r * @matrix[2][0] + g * @matrix[2][1] + b * @matrix[2][2] + 0.5
+      [r_rot.clamp(0, 255).to_i, g_rot.clamp(0, 255).to_i, b_rot.clamp(0, 255).to_i]
+   end
+   
+   def rotate!
+   # Same as rotate, but changes and returns the new color.
+      @rgb = rotate
+      @name = 'unknown'
+      update
+   end
+   
+   
    def tint(amount = 0.0)
    # Add tint (toward white) or subtract shade (toward black) to RGB array values.
    # Amount can be +/- integer (0 - 255) or percentage (0.0 - 1.0).
