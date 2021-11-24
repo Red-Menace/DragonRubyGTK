@@ -175,8 +175,10 @@ end
 # Hint where the player will enter the field with a countdown label.
 # Returns the countdown time.
 def game_starting?
-   $start_delay -= 1 if $start_delay && ($args.state.tick_count % 60).zero?
-   $start_delay = nil if $start_delay < 0
+   if $start_delay
+      $start_delay -= 1 if ($args.state.tick_count % 60).zero?
+      $start_delay = nil if $start_delay < 0
+   end
    unless $start_delay.nil?
       x, y = $current_square
       $args.outputs.sprites << Piece.new(x, y, 'sprites/white_square.png', :empty, BLUE).values
@@ -230,7 +232,7 @@ def menu_texts
             when 'combo2' then ['timed', 'hits']
             when 'combo3' then ['hits', 'edges']
             else Array($mode_choices[0])
-            end.join('+') << "#{$cheat ? : '*' : ''}"
+            end.join('+') << "#{$cheat ? '*' : ''}"
    size = $size_choices[0]
    grid = "#{1040.idiv(size)}x#{720.idiv(size)}"
    speed_index = [3, 4, 6, 9, 13].index($speed_choices[0])
