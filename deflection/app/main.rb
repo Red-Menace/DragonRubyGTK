@@ -5,7 +5,7 @@
 #
 # The playing board is a grid of squares populated with targets that must be hit.
 # Your player is represented by a ball that enters along a side of the playing
-# field - the location is random, but is hinted at by a countdown label.
+# field - the location is random, but will be indicated by a countdown label.
 # The ball is deflected by pieces placed onto the board by right/left clicking in
 # a square - these pieces cannot be (re)moved, but may be changed.
 # There is a display of the number of targets remaining and elapsed/remaining time.
@@ -23,7 +23,7 @@
 #        timed          a countdown timer is added
 #        edges          the game is over if you go off an edge
 #        combo1         timed + edges
-#        hits           the game is over if you hit previous targets
+#        hits           the game is over if you hit targets that have already been hit
 #        combo2         timed + hits
 #        combo3         edges + hits
 #     Grid sizes are 13x9, 17x12, 23x16, 26x18, and 34x24.
@@ -61,7 +61,6 @@ def set_up_setup
    $in_progress = false       # is an action for a square in progress?
    $elapsed_time = 0          # elapsed game time
    $game_running = false      # is the game running?
-   $one_shot = false          # one-shot trigger for game over sound
    
    # menu selection items
    $mode_choices = ['normal', 'timed', 'edges', 'combo1', 'hits', 'combo2', 'combo3']
@@ -81,12 +80,11 @@ def set_up_setup
    create_player
 end
 
-# (Re)start game with current settings.
+# (Re)start the game with current settings.
 def restart(time = 6)
    $start_delay = time
    $game_running = true
    $elapsed_time = 0
-   $one_shot = false
    $consecutive = 0
    $board = nil
    $piece_list = []
@@ -131,7 +129,7 @@ def too_near?(existing, new)
 end
 
 # Create a new player and entry point.
-# Returns the board sqare.
+# Returns the board square.
 def create_player
    x, y, $current_square = 0, 0, [0, 0]  # yep, I just did that
    if rand < 0.5  # left/right
@@ -154,7 +152,7 @@ def create_player
    $current_square = [x.clamp(0, $board.width - 1), y.clamp(0, $board.height - 1)]  # the entry square
 end
 
-# Store game state.
+#TODO: Store game state.
 def save_game
    # get $game_mode
    # get $board_size
@@ -163,7 +161,7 @@ def save_game
    # save to file
 end
 
-# Restore game state.
+#TODO: Restore game state.
 def load_game
    # read from file
    # get $game_mode and rotate $mode_choices until [0] matches
@@ -172,7 +170,7 @@ def load_game
    # get $targets and rotate $target_choices until [0] matches
 end
 
-# Hint where the player will enter the field with a countdown label.
+# Show where the player will enter the field with a countdown label.
 # Returns the countdown time.
 def game_starting?
    if $start_delay
@@ -274,7 +272,7 @@ def do_keyboard(inputs)
    elsif keys.include?(:g) then $size_choices.rotate!(1)  # cycle grid sizes
    elsif keys.include?(:s) then $speed_choices.rotate!(1) # cycle speeds
    elsif keys.include?(:t) then $target_choices.rotate!(1) # cycle target amounts
-   elsif keys.include?(:r)  # restart with current settings
+   elsif keys.include?(:r)  # (re)start with current settings
       $game_mode = $mode_choices[0].to_sym
       $board_size = $size_choices[0]
       $player_speed = $speed_choices[0]
@@ -286,7 +284,7 @@ def do_keyboard(inputs)
    end
 end
 
-# Handle controller buttons.
+#TODO: Handle controller buttons.
 def do_controller(inputs)
    # if I had a controller to test, this would do some of the same stuff as do_mouse
 end
@@ -296,17 +294,16 @@ end
 def do_mouse(inputs)
    return unless (click = inputs.mouse.click) ||  # yes, I did that too
                  inputs.keyboard.key_down.left || inputs.keyboard.key_down.right
-   mouse_x, mouse_y = click ? inputs.mouse.click.point : inputs.mouse.point
-   return unless mouse_x <= $menu_edge && mouse_x >= 0 && mouse_y <= 719 && mouse_y >= 0
+   point = click ? inputs.mouse.click.point : inputs.mouse.point
+   return unless point.x <= $menu_edge && point.x >= 0 && point.y <= 719 && point.y >= 0
    left = click ? inputs.mouse.button_left : !!inputs.keyboard.key_down.left
    right = click ? inputs.mouse.button_right : !!inputs.keyboard.key_down.right
-   x, y = $board.square(mouse_x, mouse_y)
+   x, y = $board.square(point.x, point.y)
    info = $board.grid[x][y]
    new_piece = if right && [:empty, :backslash].include?(info[:piece]) then :slash
                elsif left && [:empty, :slash].include?(info[:piece]) then :backslash
-               else nil
+               else return
                end
-   return if new_piece.nil?
    info[:piece] = new_piece.to_sym
    remove_item(x, y, $piece_list)  # remove the old one
    $piece_list << Piece.new(x, y, "sprites/#{new_piece}.png", :slash, BLUE).values
@@ -359,7 +356,7 @@ end
 # Expand 'game over' labels.
 def common_label(y, text, sound = nil, color = RED)
    $args.outputs.labels << [1280 - (1280 - $menu_edge).idiv(2), y, text, 2, 1, *color]
-   one_shot("sounds/#{sound}.wav") unless sound.nil?
+   $args.outputs.sounds << "sounds/#{sound}.wav" unless sound.nil?
 end
 
 # Check the board piece at the current location and perform the appropriate action
@@ -390,7 +387,7 @@ def deflect(which)
                        when :right then which == :slash ? :up : :down
                        end
    thing_that_goes_ping
-   $in_progress = true  # flag to avoid retriggering
+   $in_progress = true  # flag to avoid retriggering while still in the square
 end
 
 # Update if entering a new board square
@@ -450,13 +447,6 @@ def thing_that_goes_ping
    notes = [440, 494, 523, 587, 659, 698, 784, 880, 988, 1047, 1175]
    $tone_index = (rand < 0.5 ? $tone_index - 1 : $tone_index + 1).clamp(0, notes.count - 1)
    $args.outputs.sounds << "sounds/ping#{notes[$tone_index]}.wav"  # 'sounds/boing.wav'
-end
-
-# Play a sound once at game end.
-def one_shot(sound)
-   return if $one_shot
-   $args.outputs.sounds << sound
-   $one_shot = true
 end
 
 # Increase current game settings (wraps to beginning) - does not change game mode.
